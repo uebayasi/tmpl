@@ -177,7 +177,7 @@ macro_proc(const char *string)
 static void *
 macro_suspend(void)
 {
-	return yy_current_buffer;
+	return YY_CURRENT_BUFFER;
 }
 
 static void
