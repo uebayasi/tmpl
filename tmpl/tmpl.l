@@ -113,10 +113,7 @@ macro_start(void)
 static void
 define_start(void)
 {
-	int op;
-
-	op = end();
-	switch (op) {
+	switch (end()) {
 	case MACRO:
 	case DEFINE:
 		push(DEFINE);
@@ -130,10 +127,7 @@ define_start(void)
 static void
 template_delim(void)
 {
-	int op;
-
-	op = end();
-	switch (op) {
+	switch (end()) {
 	case MACRO:
 	case TEMPLATE:
 		push(TEMPLATE);
