@@ -19,13 +19,13 @@ struct stack {
 	int depth;
 };
 
-struct macro_ops {
+struct macro_scan_ops {
 	void (*proc)(const char *);
 	void *(*suspend)(void);
 	void (*resume)(void *);
 };
 
-void initmacro(struct macro_ops *);
+void initmacro(struct macro_scan_ops *);
 int ispushed(void);
 void push(int op);
 int pop(const char **);

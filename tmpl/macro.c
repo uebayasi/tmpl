@@ -38,17 +38,17 @@ struct frame frames[MACRO_DEPTH];
 struct stack stack;
 char chars[STRBUF_MAX];
 struct strbuf strbuf;
-struct macro_ops macro_ops;
+struct macro_scan_ops scan_ops;
 
 void
-initmacro(struct macro_ops *ops)
+initmacro(struct macro_scan_ops *ops)
 {
 	initsym();
 	stack.frames = &frames[0];
 	stack.depth = MACRO_DEPTH;
 	sb->head = &chars[0];
 	sb->tail = &chars[0];
-	macro_ops = *ops;
+	scan_ops = *ops;
 }
 
 int
@@ -181,17 +181,17 @@ template(void)
 	DBG("('%s'@'%s'@'%s')", var, val, str);
 
 	/* suspend current lex state */
-	state = (*macro_ops.suspend)();
+	state = (*scan_ops.suspend)();
 
 	/* process template */
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s'<='%s')", var, val);
-		(*macro_ops.proc)(str);
+		(*scan_ops.proc)(str);
 	}
 	delsym(var);
 	free(str);
 
 	/* resume previous lex state */
-	(*macro_ops.resume)(state);
+	(*scan_ops.resume)(state);
 }
