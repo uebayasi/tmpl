@@ -19,7 +19,7 @@
 
 static void just(void);
 static void macro_start(void);
-static void define_start(void);
+static void define_delim(void);
 static void template_delim(void);
 static void macro_close(void);
 static void macro_end(void);
@@ -56,7 +56,7 @@ at	[@]
 	BEGIN(0);
 }
 <TILDA>{equal} {
-	define_start();
+	define_delim();
 	BEGIN(0);
 }
 <TILDA>{at} {
@@ -110,7 +110,7 @@ macro_start(void)
 }
 
 static void
-define_start(void)
+define_delim(void)
 {
 	switch (end()) {
 	case MACRO:
