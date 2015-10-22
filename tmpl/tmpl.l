@@ -16,7 +16,6 @@
 
 %{
 #include <stdio.h>
-#include "tmpl.h"
 
 static void just(void);
 static void macro_start(void);
