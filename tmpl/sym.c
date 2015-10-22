@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "symtab.h"
+#include "../symtab/symtab.h"
 #include "sym.h"
 
 static struct hashtab *symtab = NULL;
