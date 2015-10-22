@@ -1,0 +1,7 @@
+*.err
+*.exe
+*.log
+*.o
+*.out
+.gdbinit
+tmpl.c
