@@ -123,8 +123,8 @@ end(void)
 void
 define(const char *var)
 {
-	int op;
 	const char *val;
+	int op;
 
 	if (var == NULL)
 		op = pop(&val);
@@ -142,10 +142,9 @@ void
 expand(void)
 {
 	const char *var, *val;
-	int op;
 	char c;
 
-	op = pop(&var);
+	(void)pop(&var);
 	var = newsym(var);
 	val = getsym(var);
 	if (val == NULL) {
@@ -168,13 +167,12 @@ template(void)
 	const char *var;
 	const char *val;
 	const char *pat;
-	int op;
-	void *state;
 	char *str;
+	void *state;
 
-	op = pop(&pat);
-	op = pop(&val);
-	op = pop(&var);
+	(void)pop(&pat);
+	(void)pop(&val);
+	(void)pop(&var);
 	val = newsym(val);
 	var = newsym(var);
 	str = strdup(pat);
