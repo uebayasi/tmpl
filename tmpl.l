@@ -168,6 +168,7 @@ macro_end(void)
 static void
 macro_proc(const char *string)
 {
+	BEGIN(0);
 	yy_scan_string(string);
 	yylex();
 }
@@ -175,7 +176,6 @@ macro_proc(const char *string)
 static void *
 macro_suspend(void)
 {
-	BEGIN(0);
 	return yy_current_buffer;
 }
 
