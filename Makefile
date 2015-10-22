@@ -43,4 +43,4 @@ intern.o: intern.c
 # clean
 
 clean:
-	rm -f tmpl.c *.o *.exe *.out *.err
+	rm -f tmpl.c *.o *.exe tests/*.out tests/*.err
