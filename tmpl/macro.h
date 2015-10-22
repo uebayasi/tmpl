@@ -31,8 +31,8 @@ void push(int op);
 int pop(const char **);
 void save(char c);
 int end(void);
-int define(const char *);
-int expand(void);
-int template(void);
+void define(const char *);
+void expand(void);
+void template(void);
 
 #endif /* _MACRO_H_ */

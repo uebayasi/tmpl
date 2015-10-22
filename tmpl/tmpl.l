@@ -147,18 +147,15 @@ macro_close(void)
 static void
 macro_end(void)
 {
-	int op;
-
-	op = end();
-	switch (op) {
+	switch (end()) {
 	case MACRO:
-		op = expand();
+		expand();
 		break;
 	case DEFINE:
-		op = define(NULL);
+		define(NULL);
 		break;
 	case TEMPLATE:
-		op = template();
+		template();
 		break;
 	default:
 		break;

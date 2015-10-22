@@ -120,7 +120,7 @@ end(void)
 	return fp->op;
 }
 
-int
+void
 define(const char *var)
 {
 	int op;
@@ -133,15 +133,12 @@ define(const char *var)
 	op = pop(&var);
 	setsym(newsym(var), newsym(val));
 	DBG("('%s'<='%s')", var, val);
-	if (op == 1)
-		/* terminal */
-		return op;
-	else
+	if (op != 1)
 		/* recurse */
-		return define(var);
+		define(var);
 }
 
-int
+void
 expand(void)
 {
 	const char *var, *val;
@@ -163,10 +160,9 @@ expand(void)
 		while ((c = *val++) != '\0')
 			save(c);
 	}
-	return op;
 }
 
-int
+void
 template(void)
 {
 	const char *var;
@@ -198,5 +194,4 @@ template(void)
 
 	/* resume previous lex state */
 	(*macro_ops.resume)(state);
-	return 0;
 }
