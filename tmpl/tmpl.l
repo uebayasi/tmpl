@@ -116,8 +116,15 @@ define_start(void)
 	int op;
 
 	op = end();
-	(void)op; /* op == MACRO */
-	push(DEFINE);
+	switch (op) {
+	case MACRO:
+	case DEFINE:
+		push(DEFINE);
+		break;
+	case TEMPLATE:
+	default:
+		yy_fatal_error("~= outside macro define!!!");
+	}
 }
 
 static void
@@ -131,6 +138,9 @@ template_delim(void)
 	case TEMPLATE:
 		push(TEMPLATE);
 		break;
+	case DEFINE:
+	default:
+		yy_fatal_error("~@ outside macro template!!!");
 	}
 }
 
@@ -158,6 +168,7 @@ macro_end(void)
 		template();
 		break;
 	default:
+		yy_fatal_error("out-of-context macro end!!!");
 		break;
 	}
 }
