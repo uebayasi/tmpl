@@ -1,7 +1,11 @@
-tmpl - stupid simple template engine
+tmpl - simple template engine
 
 SYNTAX
 
-`~{foo}` is replaced with the value of `foo`.
+`~{foo~}` is replaced with the value of `foo`.
 
-XXX How to set variables?
+`~{foo~=a~}' sets `foo' to `a'.
+
+`~{foo~=a~=b~=c~}' sets `foo' to `a', `a' to `b', and `b' to `c'.
+
+`~{i~@foo~@xxx~{i~}xxx~}' expands `xxx~{i~}xxx' with `i' set to values of `foo'.
