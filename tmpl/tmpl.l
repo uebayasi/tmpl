@@ -150,12 +150,16 @@ macro_close(void)
 static void
 macro_end(void)
 {
+	const char *var;
+
 	switch (end()) {
 	case MACRO:
 		expand();
 		break;
 	case DEFINE:
-		define(NULL);
+		var = NULL;
+		while (define(var, &var) != MACRO)
+			continue;
 		break;
 	case TEMPLATE:
 		template();

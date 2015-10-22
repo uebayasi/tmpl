@@ -120,22 +120,21 @@ end(void)
 	return fp->op;
 }
 
-void
-define(const char *var)
+int
+define(const char *var, const char **rvar)
 {
 	const char *val;
 	int op;
 
 	if (var == NULL)
-		op = pop(&val);
+		(void)pop(&val);
 	else
 		val = var;
 	op = pop(&var);
 	setsym(newsym(var), newsym(val));
 	DBG("('%s'<='%s')", var, val);
-	if (op != 1)
-		/* recurse */
-		define(var);
+	*rvar = var;
+	return op;
 }
 
 void

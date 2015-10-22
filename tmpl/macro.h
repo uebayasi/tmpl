@@ -45,7 +45,7 @@ void push(int op);
 int pop(const char **);
 void save(char c);
 int end(void);
-void define(const char *);
+int define(const char *, const char **);
 void expand(void);
 void template(void);
 
