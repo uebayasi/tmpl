@@ -17,19 +17,19 @@ macro.o: macro.c
 	${CC} -o macro.o -c macro.c
 
 test:
-	@./test.sh test0.tmpl
-	@./test.sh test1.tmpl
-	@./test.sh test2.tmpl
-	@./test.sh test3.tmpl
-	@./test.sh test4.tmpl
-	@./test.sh test5.tmpl
-	@./test.sh test6.tmpl
-	@./test.sh test7.tmpl
-	@./test.sh test8.tmpl
-	@./test.sh test9.tmpl
-	@./test.sh test10.tmpl
-	@./test.sh test11.tmpl
-	@./test.sh test12.tmpl
+	@cd tests && ./test.sh test0.tmpl
+	@cd tests && ./test.sh test1.tmpl
+	@cd tests && ./test.sh test2.tmpl
+	@cd tests && ./test.sh test3.tmpl
+	@cd tests && ./test.sh test4.tmpl
+	@cd tests && ./test.sh test5.tmpl
+	@cd tests && ./test.sh test6.tmpl
+	@cd tests && ./test.sh test7.tmpl
+	@cd tests && ./test.sh test8.tmpl
+	@cd tests && ./test.sh test9.tmpl
+	@cd tests && ./test.sh test10.tmpl
+	@cd tests && ./test.sh test11.tmpl
+	@cd tests && ./test.sh test12.tmpl
 
 # symtab
 

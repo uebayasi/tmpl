@@ -77,7 +77,7 @@ dump() {
 
 ################################################################################
 
-./tmpl.exe <$tmpl >$tmpl.out 2>$tmpl.err
+../tmpl.exe <$tmpl >$tmpl.out 2>$tmpl.err
 res=$?
 echo >>$tmpl.err 2>&1
 
