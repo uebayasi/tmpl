@@ -33,7 +33,6 @@ void save(char c);
 int end(void);
 int define(const char *);
 int expand(void);
-int repeat(void);
 int template(void);
 
 #endif /* _MACRO_H_ */

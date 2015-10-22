@@ -21,14 +21,14 @@
 static void just(void);
 static void macro_start(void);
 static void define_start(void);
-static void repeat_delim(void);
+static void template_delim(void);
 static void macro_close(void);
 static void macro_end(void);
 
 enum op {
 	MACRO = 1,
 	DEFINE,
-	REPEAT,
+	TEMPLATE,
 };
 %}
 
@@ -61,7 +61,7 @@ at	[@]
 	BEGIN(0);
 }
 <TILDA>{at} {
-	repeat_delim();
+	template_delim();
 	BEGIN(0);
 }
 <TILDA>{close} {
@@ -121,15 +121,15 @@ define_start(void)
 }
 
 static void
-repeat_delim(void)
+template_delim(void)
 {
 	int op;
 
 	op = end();
 	switch (op) {
 	case MACRO:
-	case REPEAT:
-		push(REPEAT);
+	case TEMPLATE:
+		push(TEMPLATE);
 		break;
 	}
 }
@@ -157,7 +157,7 @@ macro_end(void)
 	case DEFINE:
 		op = define(NULL);
 		break;
-	case REPEAT:
+	case TEMPLATE:
 		op = template();
 		break;
 	default:
