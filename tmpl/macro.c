@@ -196,28 +196,29 @@ define(const char *var, const char **rvar)
 	return op;
 }
 
+static void
+unexpand(const char *s)
+{
+	savestr("~{");
+	savestr(s);
+	savestr("~}");
+}
+
 void
 expand(void)
 {
-	const char *var, *val, *l, *r, *str;
+	const char *var, *val;
 
 	(void)pop(&var);
 	var = newsym(var);
 	val = getsym(var);
 	if (val == NULL) {
 		DBG("('%s'=='%s')\n", var, var);
-		l = "~{";
-		r = "~}";
-		str = var;
+		unexpand(var);
 	} else {
 		DBG("('%s'=>'%s')\n", var, val);
-		l = "";
-		r = "";
-		str = val;
+		savestr(val);
 	}
-	savestr(l);
-	savestr(str);
-	savestr(r);
 }
 
 void
