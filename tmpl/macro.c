@@ -41,8 +41,7 @@
 	fprintf(stderr, "===|"); \
 	for (str = strbuf.head; str != strbuf.tail; str++) { \
 		char c = *str; \
-		char l = '['; \
-		DUMPCHAR(l, c); \
+		DUMPCHAR('[', c); \
 	} \
 	fprintf(stderr, "|===\n"); \
 } while (0)
