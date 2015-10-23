@@ -133,19 +133,35 @@ pop(const char **rsym)
 struct dupctx {
 	struct strbuf xfb;
 	struct strbuf xsb;
+	char *s;
 };
 
 static const char *
 dup(struct dupctx *d, const char *s)
 {
-	d->xfb.head = strdup(s);
-	return d->xfb.head;
+#if 0
+	d->s = strdup(s);
+#else
+	d->xfb = *fb;
+	d->xsb = *sb;
+	d->s = s;
+	while (*s++ != '\0')
+		continue;
+	fb->head = fb->tail = sb->tail = s;
+#endif
+	return d->s;
 }
 
 static void
 undup(struct dupctx *d)
 {
-	free(d->xfb.head);
+#if 0
+	free(d->s);
+#else
+	/* XXX */
+	*fb = d->xfb;
+	*sb = d->xsb;
+#endif
 }
 
 void
@@ -260,7 +276,6 @@ template(void)
 		(*scan_ops.proc)(str);
 	}
 	delsym(var);
-	undup(&d);
 
 	(void)pop(&pat);
 	savestr(pat);
