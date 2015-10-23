@@ -19,7 +19,7 @@
 #include "macro.h"
 #include "sym.h"
 
-#if 0
+#if 1
 #define	DBG(...)	do {} while (0)
 #define	DUMPBUF()	do {} while (0)
 #else
@@ -130,7 +130,7 @@ pop(const char **rsym)
 }
 
 static void
-dup(const char *s)
+dupstr(const char *s)
 {
 	while (*s++ != '\0')
 		continue;
@@ -228,13 +228,12 @@ template(void)
 	const char *pat;
 	void *state;
 
-	DUMPBUF();
-
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	dup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
+
+	dupstr(pat);
 	push(0);
 
 	/* suspend current lex state */
@@ -253,6 +252,4 @@ template(void)
 
 	/* resume previous lex state */
 	(*scan_ops.resume)(state);
-
-	DUMPBUF();
 }
