@@ -21,27 +21,32 @@
 
 #if 0
 #define	DBG(...)	do {} while (0)
+#define	DBGINDENT()	do {} while (0)
 #define	DUMPCHAR()	do {} while (0)
 #define	DUMPBUF()	do {} while (0)
 #else
-#define	DBG(...)	do { \
+#define	DEBUG
+#define	DBGINDENT()	do { \
 	int d = stack.depth; \
 	while (d++ < MACRO_DEPTH) fputc('\t', stderr); \
+} while (0)
+#define	DBG(...)	do { \
+	DBGINDENT(); \
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
 #define	PC(c)		((vc(c) == 0) ? '?' : vc(c))
-#define	DUMPCHAR(l, c)	do { \
+#define	DUMPCHAR(l, c, n)	do { \
 	if ((c) < 0x20) \
-		DBG("%c%c%c%c\n", (l), '\\', PC(c), (l) + 2); \
+		fprintf(stderr, "%c%c%c%c%s", (l), '\\', PC(c), (l) + 2, (n)); \
 	else \
-		DBG("%c%c%c%c\n", (l), ' ', c, (l) + 2); \
+		fprintf(stderr, "%c%c%c%c%s", (l), ' ', c, (l) + 2, (n)); \
 } while (0)
 #define	DUMPBUF()	do { \
 	char *str; \
 	fprintf(stderr, "===|"); \
 	for (str = strbuf.head; str != strbuf.tail; str++) { \
 		char c = *str; \
-		DUMPCHAR('[', c); \
+		DUMPCHAR('[', c, ""); \
 	} \
 	fprintf(stderr, "|===\n"); \
 } while (0)
@@ -156,7 +161,8 @@ save(char c)
 		fb->tail++;
 		l = '[';
 	}
-	DUMPCHAR(l, c);
+	DBGINDENT();
+	DUMPCHAR(l, c, "\n");
 }
 
 static void
