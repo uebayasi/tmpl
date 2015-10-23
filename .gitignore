@@ -1,7 +1,10 @@
+*.core
 *.err
 *.exe
 *.log
 *.o
 *.out
+*.swp
+*.work
 .gdbinit
 tmpl.c
