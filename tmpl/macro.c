@@ -19,7 +19,7 @@
 #include "macro.h"
 #include "sym.h"
 
-#if 1
+#if 0
 #define	DBG(...)	do {} while (0)
 #define	DUMPCHAR()	do {} while (0)
 #define	DUMPBUF()	do {} while (0)
@@ -29,9 +29,10 @@
 	while (d++ < MACRO_DEPTH) fputc('\t', stderr); \
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
+#define	PC(c)		((vc(c) == 0) ? '?' : vc(c))
 #define	DUMPCHAR(l, c)	do { \
 	if ((c) < 0x20) \
-		DBG("%c%c%c%c\n", (l), '\\', (vc(c) == 0) ? '?' : vc(c), (l) + 2); \
+		DBG("%c%c%c%c\n", (l), '\\', PC(c), (l) + 2); \
 	else \
 		DBG("%c%c%c%c\n", (l), ' ', c, (l) + 2); \
 } while (0)
