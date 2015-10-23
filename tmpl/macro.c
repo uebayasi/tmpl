@@ -113,7 +113,10 @@ save(char c)
 			ERR("buffer overflow!!!\n");
 		*sb->tail++ = c;
 		fb->tail++;
-		DBG("[%c]\n", c);
+		if (c < 0x20)
+			DBG("[\\%d]\n", c);
+		else
+			DBG("[%c]\n", c);
 	}
 }
 
