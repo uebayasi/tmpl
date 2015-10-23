@@ -108,7 +108,7 @@ void
 pushstr(int op)
 {
 	push(op);
-	fp->dup = 1;
+	fp->sym = -1;
 }
 
 int
@@ -117,7 +117,7 @@ pop(const char **rsym)
 	const char *sym;
 	int op;
 
-	if (fp->sym != NULL)
+	if (fp->sym != NULL && fp->sym != -1)
 		sym = fp->sym;
 	else
 		sym = fb->head;
@@ -178,7 +178,7 @@ int
 end(void)
 {
 	save('\0');
-	if (fp->dup == 0) {
+	if (fp->sym != -1) {
 		fp->sym = newsym(fb->head);
 		sb->tail = fb->tail = fb->head;
 	}

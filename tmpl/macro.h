@@ -27,7 +27,6 @@ struct frame {
 	struct strbuf strbuf;
 	const char *sym;
 	int op;
-	int dup;
 };
 
 struct stack {
