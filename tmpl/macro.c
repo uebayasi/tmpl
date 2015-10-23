@@ -23,7 +23,11 @@
 #if 1
 #define	DBG(...)
 #else
-#define	DBG(...)	fprintf(stderr, __VA_ARGS__)
+#define	DBG(...)	do { \
+	int d = stack.depth; \
+	while (d++ < MACRO_DEPTH) fputc(' ', stderr); \
+	fprintf(stderr, __VA_ARGS__); \
+} while (0)
 #endif
 #define ERR(...) do { \
 	fprintf(stderr, __VA_ARGS__); \
@@ -63,8 +67,8 @@ push(int op)
 	/* get new frame */
 	if (stack.depth == 0)
 		ERR("stack too deep!!!\n");
-	stack.depth--;
 	DBG("-%d\n", op);
+	stack.depth--;
 
 	/* init new frame */
 	fb->head = fb->tail = sb->tail;
