@@ -28,7 +28,7 @@
 #define	DEBUG
 #define	DBGINDENT()	do { \
 	int d = stack.depth; \
-	while (d++ < MACRO_DEPTH) fputc('\t', stderr); \
+	while (d++ < MACRO_DEPTH - 1) fputc('\t', stderr); \
 } while (0)
 #define	DBG(...)	do { \
 	DBGINDENT(); \
@@ -68,11 +68,13 @@ const char cs[20] = {
 };
 #define	vc(c)	(cs[(int)c])
 
-struct strbuf allbuf;
-struct strbuf strbuf;
-#define	fb	(&(fp->strbuf))
-#define	sb	(&(strbuf))
-#define	ab	(&(allbuf))
+struct {
+	struct strbuf all;
+	struct strbuf cur;
+} ss;
+#define	fb	(&fp->strbuf)
+#define	sb	(&ss.cur)
+#define	ab	(&ss.all)
 
 static void
 ss_alloc(void)
@@ -86,35 +88,35 @@ ss_alloc(void)
 }
 
 const char *
-ss_get(void)
+ss_get(struct strbuf *b)
 {
-	return fb->head;
+	return b->head;
 }
 
 static void
-ss_put(char c)
+ss_put(struct strbuf *b, char c)
 {
 	*sb->tail++ = c;
-	fb->tail++;
+	b->tail++;
 }
 
 static void
-ss_push(void)
+ss_push(struct strbuf *b)
 {
-	fb->head = fb->tail = sb->tail;
+	b->head = b->tail = sb->tail;
 }
 
 static void
-ss_pop(void)
+ss_pop(struct strbuf *b)
 {
-	sb->tail = fb->tail = fb->head;
+	sb->tail = b->tail = b->head;
 }
 
 static void
-ss_dup(const char *s)
+ss_dup(struct strbuf *b, const char *s)
 {
 	sb->tail = s;
-	ss_push();
+	ss_push(b);
 }
 
 static int
@@ -128,7 +130,7 @@ initmacro(struct macro_scan_ops *ops)
 {
 	initsym();
 	stack.frames = &frames[0];
-	stack.depth = MACRO_DEPTH;
+	stack.depth = MACRO_DEPTH - 1;
 	ss_alloc();
 	scan_ops = *ops;
 }
@@ -136,7 +138,7 @@ initmacro(struct macro_scan_ops *ops)
 int
 ispushed(void)
 {
-	return (stack.depth < MACRO_DEPTH);
+	return (stack.depth < MACRO_DEPTH - 1);
 }
 
 void
@@ -149,7 +151,7 @@ push(int op)
 	stack.depth--;
 
 	/* init new frame */
-	ss_push();
+	ss_push(fb);
 	fp->sym = NULL;
 	fp->op = op;
 }
@@ -170,13 +172,13 @@ pop(const char **rsym)
 	if (fp->sym != NULL && fp->sym != (void *)-1)
 		sym = fp->sym;
 	else
-		sym = ss_get();
+		sym = ss_get(fb);
 
 	/* fini current frame */
-	ss_pop();
+	ss_pop(fb);
 	op = fp->op;
 	fp->op = 0;
-	if (stack.depth == MACRO_DEPTH)
+	if (stack.depth == MACRO_DEPTH - 1)
 		ERR("cannot pop stack!!!\n");
 
 	/* put current frame */
@@ -192,7 +194,7 @@ dupstr(const char *s)
 {
 	while (*s++ != '\0')
 		continue;
-	ss_dup(s);
+	ss_dup(fb, s);
 }
 
 void
@@ -206,7 +208,7 @@ save(char c)
 	} else {
 		if (ss_is_limit())
 			ERR("buffer overflow!!!\n");
-		ss_put(c);
+		ss_put(fb, c);
 		l = '[';
 	}
 	DBGINDENT();
@@ -227,8 +229,8 @@ end(void)
 {
 	save('\0');
 	if (fp->sym != (void *)-1) {
-		fp->sym = newsym(ss_get());
-		ss_pop();
+		fp->sym = newsym(ss_get(fb));
+		ss_pop(fb);
 	}
 	return fp->op;
 }
