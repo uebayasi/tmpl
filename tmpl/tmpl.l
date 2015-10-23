@@ -133,7 +133,7 @@ template_delim(void)
 		push(TMPLVAR);
 		break;
 	case TMPLVAR:
-		push(TMPLVAL);
+		pushstr(TMPLVAL);
 		break;
 	case DEFINE:
 	default:

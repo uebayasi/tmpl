@@ -93,6 +93,14 @@ push(int op)
 	fb->head = fb->tail = sb->tail;
 	fp->sym = NULL;
 	fp->op = op;
+	fp->copy = 1;
+}
+
+void
+pushstr(int op)
+{
+	push(op);
+	fp->copy = 0;
 }
 
 int
@@ -156,9 +164,7 @@ int
 end(void)
 {
 	save('\0');
-	if (fp->op == 4/* XXX */)
-		;
-	else {
+	if (fp->copy) {
 		fp->sym = newsym(fb->head);
 		sb->tail = fb->tail = fb->head;
 	}
