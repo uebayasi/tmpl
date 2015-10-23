@@ -232,25 +232,19 @@ template(void)
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
-
 	dupstr(pat);
 	push(0);
+	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 
-	/* suspend current lex state */
 	state = (*scan_ops.suspend)();
-
-	/* process template */
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s':='%s')\n", var, val);
 		(*scan_ops.proc)(pat);
 	}
 	delsym(var);
+	(*scan_ops.resume)(state);
 
 	(void)pop(&pat);
 	savestr(pat);
-
-	/* resume previous lex state */
-	(*scan_ops.resume)(state);
 }
