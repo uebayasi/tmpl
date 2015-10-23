@@ -85,10 +85,8 @@ if [ -r $tmpl.exp ]; then
 		printf '%s => OK!!!\n' $tmpl
 	else
 		printf '%s => NG!!!\n' $tmpl
-		dump $tmpl
 	fi
-else
-	dump $tmpl
 fi
+dump $tmpl
 
 ################################################################################

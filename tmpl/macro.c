@@ -20,13 +20,27 @@
 #include "macro.h"
 #include "sym.h"
 
-#if 1
-#define	DBG(...)
+#if 0
+#define	DBG(...)	do {} while (0)
+#define	DUMPBUF()	do {} while (0)
 #else
 #define	DBG(...)	do { \
 	int d = stack.depth; \
 	while (d++ < MACRO_DEPTH) fputc(' ', stderr); \
 	fprintf(stderr, __VA_ARGS__); \
+} while (0)
+#define	DUMPBUF()	do { \
+	char *str; \
+	fprintf(stderr, "=== "); \
+	for (str = strbuf.head; str != strbuf.tail; str++) { \
+		char c = *str; \
+		char l = '['; \
+		if (c < 0x20) \
+			fprintf(stderr, "%c\\%c%c", l, (cs[c] == 0) ? '?' : cs[c], l + 2); \
+		else \
+			fprintf(stderr, "%c %c%c", l, c, l + 2); \
+	} \
+	fprintf(stderr, " ===\n"); \
 } while (0)
 #endif
 #define ERR(...) do { \
@@ -43,6 +57,11 @@ struct stack stack;
 char chars[STRBUF_MAX];
 struct strbuf strbuf;
 struct macro_scan_ops scan_ops;
+
+const char cs[20] = {
+	[0] = '0',
+	[10] = 'n',
+};
 
 void
 initmacro(struct macro_scan_ops *ops)
@@ -81,9 +100,6 @@ pop(const char **rsym)
 	const char *sym;
 	int op;
 
-	/* alloc current string as symbol */
-	if (fb->tail - fb->head == MACRO_MAX)
-		ERR("macro name too long!!!\n");
 	sym = fb->head;
 
 	/* fini current frame */
@@ -102,6 +118,16 @@ pop(const char **rsym)
 	return op;
 }
 
+static void
+dup(void)
+{
+	struct strbuf ofb = *fb;
+	int op = fp->op;
+
+	push(op);
+	*fb = ofb;
+}
+
 void
 save(char c)
 {
@@ -118,9 +144,9 @@ save(char c)
 		l = '[';
 	}
 	if (c < 0x20)
-		DBG("%c\\%d%c\n", l, c, l + 2);
+		DBG("%c\\%c%c\n", l, (cs[c] == 0) ? '?' : cs[c], l + 2);
 	else
-		DBG("%c%c%c\n", l, c, l + 2);
+		DBG("%c %c%c\n", l, c, l + 2);
 }
 
 static void
@@ -145,6 +171,8 @@ define(const char *var, const char **rvar)
 	const char *val;
 	int op;
 
+	DUMPBUF();
+
 	if (var == NULL)
 		(void)pop(&val);
 	else
@@ -153,6 +181,9 @@ define(const char *var, const char **rvar)
 	setsym(newsym(var), newsym(val));
 	DBG("('%s'<='%s')\n", var, val);
 	*rvar = var;
+
+	DUMPBUF();
+
 	return op;
 }
 
@@ -160,6 +191,8 @@ void
 expand(void)
 {
 	const char *var, *val, *l, *r, *str;
+
+	DUMPBUF();
 
 	(void)pop(&var);
 	var = newsym(var);
@@ -178,6 +211,8 @@ expand(void)
 	savestr(l);
 	savestr(str);
 	savestr(r);
+
+	DUMPBUF();
 }
 
 void
@@ -189,6 +224,9 @@ template(void)
 	char *str;
 	void *state;
 
+	DBG(">>>\n");
+	DUMPBUF();
+
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
@@ -196,6 +234,9 @@ template(void)
 	var = newsym(var);
 	str = strdup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, str);
+	DUMPBUF();
+	dup();
+	DUMPBUF();
 
 	/* suspend current lex state */
 	state = (*scan_ops.suspend)();
@@ -203,12 +244,23 @@ template(void)
 	/* process template */
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
-		DBG("('%s'<='%s')\n", var, val);
+		DBG("('%s':='%s')\n", var, val);
+		DUMPBUF();
 		(*scan_ops.proc)(str);
 	}
 	delsym(var);
 	free(str);
 
+	DUMPBUF();
+	(void)pop(&pat);
+	int c;
+	while ((c = *pat++) != NULL)
+		save(c);
+	DUMPBUF();
+
 	/* resume previous lex state */
 	(*scan_ops.resume)(state);
+
+	DUMPBUF();
+	DBG("<<<\n");
 }
