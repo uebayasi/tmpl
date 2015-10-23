@@ -68,9 +68,11 @@ const char cs[20] = {
 };
 #define	vc(c)	(cs[(int)c])
 
+struct strbuf allbuf;
 struct strbuf strbuf;
 #define	fb	(&(fp->strbuf))
 #define	sb	(&(strbuf))
+#define	ab	(&(allbuf))
 
 static void
 ss_alloc(void)
@@ -79,6 +81,8 @@ ss_alloc(void)
 
 	sb->head = &chars[0];
 	sb->tail = &chars[0];
+	ab->head = &chars[0];
+	ab->tail = &chars[STRBUF_MAX];
 }
 
 const char *
@@ -92,18 +96,6 @@ ss_put(char c)
 {
 	*sb->tail++ = c;
 	fb->tail++;
-}
-
-static void
-ss_init(void)
-{
-	fb->head = fb->tail = NULL;
-}
-
-static void
-ss_fini(void)
-{
-	sb->tail = fb->head;
 }
 
 static void
@@ -121,13 +113,14 @@ ss_pop(void)
 static void
 ss_dup(const char *s)
 {
-	fb->head = fb->tail = sb->tail = s;
+	sb->tail = s;
+	ss_push();
 }
 
 static int
 ss_is_limit(void)
 {
-	return (sb->tail - sb->head == STRBUF_MAX);
+	return (sb->head == ab->tail);
 }
 
 void
@@ -165,7 +158,7 @@ void
 pushstr(int op)
 {
 	push(op);
-	fp->sym = -1;
+	fp->sym = (void *)-1;
 }
 
 int
@@ -174,15 +167,14 @@ pop(const char **rsym)
 	const char *sym;
 	int op;
 
-	if (fp->sym != NULL && fp->sym != -1)
+	if (fp->sym != NULL && fp->sym != (void *)-1)
 		sym = fp->sym;
 	else
 		sym = ss_get();
 
 	/* fini current frame */
-	ss_fini();
+	ss_pop();
 	op = fp->op;
-	ss_init();
 	fp->op = 0;
 	if (stack.depth == MACRO_DEPTH)
 		ERR("cannot pop stack!!!\n");
@@ -234,7 +226,7 @@ int
 end(void)
 {
 	save('\0');
-	if (fp->sym != -1) {
+	if (fp->sym != (void *)-1) {
 		fp->sym = newsym(ss_get());
 		ss_pop();
 	}
