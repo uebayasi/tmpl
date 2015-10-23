@@ -105,19 +105,31 @@ pop(const char **rsym)
 void
 save(char c)
 {
+	char l;
+
 	if (!ispushed()) {
 		fputc(c, stdout);
-		DBG("{%c}\n", c);
+		l = '{';
 	} else {
 		if (sb->tail - sb->head == STRBUF_MAX)
 			ERR("buffer overflow!!!\n");
 		*sb->tail++ = c;
 		fb->tail++;
-		if (c < 0x20)
-			DBG("[\\%d]\n", c);
-		else
-			DBG("[%c]\n", c);
+		l = '[';
 	}
+	if (c < 0x20)
+		DBG("%c\\%d%c\n", l, c, l + 2);
+	else
+		DBG("%c%c%c\n", l, c, l + 2);
+}
+
+static void
+savestr(const char *s)
+{
+	int c;
+
+	while ((c = *s++) != '\0')
+		save(c);
 }
 
 int
@@ -147,24 +159,25 @@ define(const char *var, const char **rvar)
 void
 expand(void)
 {
-	const char *var, *val;
-	char c;
+	const char *var, *val, *l, *r, *str;
 
 	(void)pop(&var);
 	var = newsym(var);
 	val = getsym(var);
 	if (val == NULL) {
-		save('~');
-		save('{');
-		while ((c = *var++) != '\0')
-			save(c);
-		save('~');
-		save('}');
+		DBG("('%s'=='%s')\n", var, var);
+		l = "~{";
+		r = "~}";
+		str = var;
 	} else {
 		DBG("('%s'=>'%s')\n", var, val);
-		while ((c = *val++) != '\0')
-			save(c);
+		l = "";
+		r = "";
+		str = val;
 	}
+	savestr(l);
+	savestr(str);
+	savestr(r);
 }
 
 void
