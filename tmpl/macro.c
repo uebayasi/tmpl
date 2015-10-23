@@ -118,16 +118,6 @@ pop(const char **rsym)
 	return op;
 }
 
-static void
-dup(void)
-{
-	struct strbuf ofb = *fb;
-	int op = fp->op;
-
-	push(op);
-	*fb = ofb;
-}
-
 void
 save(char c)
 {
@@ -224,7 +214,6 @@ template(void)
 	char *str;
 	void *state;
 
-	DBG(">>>\n");
 	DUMPBUF();
 
 	(void)pop(&pat);
@@ -235,7 +224,7 @@ template(void)
 	str = strdup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, str);
 	DUMPBUF();
-	dup();
+	push(0);
 	DUMPBUF();
 
 	/* suspend current lex state */
@@ -260,5 +249,4 @@ template(void)
 	(*scan_ops.resume)(state);
 
 	DUMPBUF();
-	DBG("<<<\n");
 }
