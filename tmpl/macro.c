@@ -21,6 +21,7 @@
 
 #if 1
 #define	DBG(...)	do {} while (0)
+#define	DUMPCHAR()	do {} while (0)
 #define	DUMPBUF()	do {} while (0)
 #else
 #define	DBG(...)	do { \
@@ -28,16 +29,19 @@
 	while (d++ < MACRO_DEPTH) fputc('\t', stderr); \
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
+#define	DUMPCHAR(l, c)	do { \
+	if ((c) < 0x20) \
+		DBG("%c%c%c%c\n", (l), '\\', (vc(c) == 0) ? '?' : vc(c), (l) + 2); \
+	else \
+		DBG("%c%c%c%c\n", (l), ' ', c, (l) + 2); \
+} while (0)
 #define	DUMPBUF()	do { \
 	char *str; \
 	fprintf(stderr, "===|"); \
 	for (str = strbuf.head; str != strbuf.tail; str++) { \
 		char c = *str; \
 		char l = '['; \
-		if (c < 0x20) \
-			fprintf(stderr, "%c\\%c%c", l, (cs[(int)c] == 0) ? '?' : cs[(int)c], l + 2); \
-		else \
-			fprintf(stderr, "%c %c%c", l, c, l + 2); \
+		DUMPCHAR(l, c); \
 	} \
 	fprintf(stderr, "|===\n"); \
 } while (0)
@@ -61,6 +65,7 @@ const char cs[20] = {
 	[0] = '0',
 	[10] = 'n',
 };
+#define	vc(c)	(cs[(int)c])
 
 void
 initmacro(struct macro_scan_ops *ops)
@@ -152,10 +157,7 @@ save(char c)
 		fb->tail++;
 		l = '[';
 	}
-	if (c < 0x20)
-		DBG("%c\\%c%c\n", l, (cs[(int)c] == 0) ? '?' : cs[(int)c], l + 2);
-	else
-		DBG("%c %c%c\n", l, c, l + 2);
+	DUMPCHAR(l, c);
 }
 
 static void
