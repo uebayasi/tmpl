@@ -79,7 +79,6 @@ dump() {
 
 ../tmpl/tmpl.exe <$tmpl >$tmpl.out 2>$tmpl.err
 res=$?
-echo >>$tmpl.err 2>&1
 
 if [ -r $tmpl.exp ]; then
 	if [ $res -eq 0 ] && cmp $tmpl.out $tmpl.exp >/dev/null 2>&1; then

@@ -64,7 +64,7 @@ push(int op)
 	if (stack.depth == 0)
 		ERR("stack too deep!!!\n");
 	stack.depth--;
-	DBG("-%d", op);
+	DBG("-%d\n", op);
 
 	/* init new frame */
 	fb->head = fb->tail = sb->tail;
@@ -92,7 +92,7 @@ pop(const char **rsym)
 
 	/* put current frame */
 	stack.depth++;
-	DBG("+%d", op);
+	DBG("+%d\n", op);
 	
 	*rsym = sym;
 	return op;
@@ -103,13 +103,13 @@ save(char c)
 {
 	if (!ispushed()) {
 		fputc(c, stdout);
-		DBG("{%c}", c);
+		DBG("{%c}\n", c);
 	} else {
 		if (sb->tail - sb->head == STRBUF_MAX)
 			ERR("buffer overflow!!!\n");
 		*sb->tail++ = c;
 		fb->tail++;
-		DBG("[%c]", c);
+		DBG("[%c]\n", c);
 	}
 }
 
@@ -132,7 +132,7 @@ define(const char *var, const char **rvar)
 		val = var;
 	op = pop(&var);
 	setsym(newsym(var), newsym(val));
-	DBG("('%s'<='%s')", var, val);
+	DBG("('%s'<='%s')\n", var, val);
 	*rvar = var;
 	return op;
 }
@@ -154,7 +154,7 @@ expand(void)
 		save('~');
 		save('}');
 	} else {
-		DBG("('%s'=>'%s')", var, val);
+		DBG("('%s'=>'%s')\n", var, val);
 		while ((c = *val++) != '\0')
 			save(c);
 	}
@@ -175,7 +175,7 @@ template(void)
 	val = newsym(val);
 	var = newsym(var);
 	str = strdup(pat);
-	DBG("('%s'@'%s'@'%s')", var, val, str);
+	DBG("('%s'@'%s'@'%s')\n", var, val, str);
 
 	/* suspend current lex state */
 	state = (*scan_ops.suspend)();
@@ -183,7 +183,7 @@ template(void)
 	/* process template */
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
-		DBG("('%s'<='%s')", var, val);
+		DBG("('%s'<='%s')\n", var, val);
 		(*scan_ops.proc)(str);
 	}
 	delsym(var);
