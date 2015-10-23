@@ -130,16 +130,22 @@ pop(const char **rsym)
 	return op;
 }
 
+struct dupctx {
+	struct strbuf xfb;
+	struct strbuf xsb;
+};
+
 static const char *
-dup(const char *s)
+dup(struct dupctx *d, const char *s)
 {
-	return strdup(s);
+	d->xfb.head = strdup(s);
+	return d->xfb.head;
 }
 
 static void
-undup(const char *s)
+undup(struct dupctx *d)
 {
-	free(s);
+	free(d->xfb.head);
 }
 
 void
@@ -233,13 +239,14 @@ template(void)
 	const char *pat;
 	const char *str;
 	void *state;
+	struct dupctx d;
 
 	DUMPBUF();
 
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	str = dup(pat);
+	str = dup(&d, pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, str);
 	push(0);
 
@@ -253,7 +260,7 @@ template(void)
 		(*scan_ops.proc)(str);
 	}
 	delsym(var);
-	undup(str);
+	undup(&d);
 
 	(void)pop(&pat);
 	savestr(pat);
