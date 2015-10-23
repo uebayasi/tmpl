@@ -227,9 +227,7 @@ expand(void)
 void
 template(void)
 {
-	const char *var;
-	const char *val;
-	const char *pat;
+	const char *var, *val, *pat;
 	void *state;
 
 	(void)pop(&pat);
