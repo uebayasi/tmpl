@@ -31,7 +31,7 @@
 } while (0)
 #define	DUMPBUF()	do { \
 	char *str; \
-	fprintf(stderr, "=== "); \
+	fprintf(stderr, "===|"); \
 	for (str = strbuf.head; str != strbuf.tail; str++) { \
 		char c = *str; \
 		char l = '['; \
@@ -40,7 +40,7 @@
 		else \
 			fprintf(stderr, "%c %c%c", l, c, l + 2); \
 	} \
-	fprintf(stderr, " ===\n"); \
+	fprintf(stderr, "|===\n"); \
 } while (0)
 #endif
 #define ERR(...) do { \
@@ -91,6 +91,7 @@ push(int op)
 
 	/* init new frame */
 	fb->head = fb->tail = sb->tail;
+	fp->sym = NULL;
 	fp->op = op;
 }
 
@@ -100,7 +101,10 @@ pop(const char **rsym)
 	const char *sym;
 	int op;
 
-	sym = fb->head;
+	if (fp->sym != NULL)
+		sym = fp->sym;
+	else
+		sym = fb->head;
 
 	/* fini current frame */
 	sb->tail = fb->head;
@@ -152,6 +156,8 @@ int
 end(void)
 {
 	save('\0');
+	fp->sym = newsym(fb->head);
+	sb->tail = fb->tail = fb->head;
 	return fp->op;
 }
 
@@ -211,8 +217,6 @@ template(void)
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	val = newsym(val);
-	var = newsym(var);
 	str = strdup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, str);
 	push(0);

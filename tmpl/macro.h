@@ -25,6 +25,7 @@ struct strbuf {
 
 struct frame {
 	struct strbuf strbuf;
+	const char *sym;
 	int op;
 };
 
