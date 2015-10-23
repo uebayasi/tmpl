@@ -130,6 +130,18 @@ pop(const char **rsym)
 	return op;
 }
 
+static const char *
+dup(const char *s)
+{
+	return strdup(s);
+}
+
+static void
+undup(const char *s)
+{
+	free(s);
+}
+
 void
 save(char c)
 {
@@ -219,7 +231,7 @@ template(void)
 	const char *var;
 	const char *val;
 	const char *pat;
-	char *str;
+	const char *str;
 	void *state;
 
 	DUMPBUF();
@@ -227,7 +239,7 @@ template(void)
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	str = strdup(pat);
+	str = dup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, str);
 	push(0);
 
@@ -241,7 +253,7 @@ template(void)
 		(*scan_ops.proc)(str);
 	}
 	delsym(var);
-	free(str);
+	undup(str);
 
 	(void)pop(&pat);
 	savestr(pat);
