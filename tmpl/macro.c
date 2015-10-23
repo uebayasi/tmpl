@@ -161,8 +161,6 @@ define(const char *var, const char **rvar)
 	const char *val;
 	int op;
 
-	DUMPBUF();
-
 	if (var == NULL)
 		(void)pop(&val);
 	else
@@ -172,8 +170,6 @@ define(const char *var, const char **rvar)
 	DBG("('%s'<='%s')\n", var, val);
 	*rvar = var;
 
-	DUMPBUF();
-
 	return op;
 }
 
@@ -181,8 +177,6 @@ void
 expand(void)
 {
 	const char *var, *val, *l, *r, *str;
-
-	DUMPBUF();
 
 	(void)pop(&var);
 	var = newsym(var);
@@ -201,8 +195,6 @@ expand(void)
 	savestr(l);
 	savestr(str);
 	savestr(r);
-
-	DUMPBUF();
 }
 
 void
@@ -223,9 +215,7 @@ template(void)
 	var = newsym(var);
 	str = strdup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, str);
-	DUMPBUF();
 	push(0);
-	DUMPBUF();
 
 	/* suspend current lex state */
 	state = (*scan_ops.suspend)();
@@ -234,16 +224,13 @@ template(void)
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s':='%s')\n", var, val);
-		DUMPBUF();
 		(*scan_ops.proc)(str);
 	}
 	delsym(var);
 	free(str);
 
-	DUMPBUF();
 	(void)pop(&pat);
 	savestr(pat);
-	DUMPBUF();
 
 	/* resume previous lex state */
 	(*scan_ops.resume)(state);
