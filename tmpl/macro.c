@@ -16,7 +16,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "macro.h"
 #include "sym.h"
 
@@ -130,38 +129,12 @@ pop(const char **rsym)
 	return op;
 }
 
-struct dupctx {
-	struct strbuf xfb;
-	struct strbuf xsb;
-	char *s;
-};
-
-static const char *
-dup(struct dupctx *d, const char *s)
+static void
+dup(const char *s)
 {
-#if 0
-	d->s = strdup(s);
-#else
-	d->xfb = *fb;
-	d->xsb = *sb;
-	d->s = s;
 	while (*s++ != '\0')
 		continue;
 	fb->head = fb->tail = sb->tail = s;
-#endif
-	return d->s;
-}
-
-static void
-undup(struct dupctx *d)
-{
-#if 0
-	free(d->s);
-#else
-	/* XXX */
-	*fb = d->xfb;
-	*sb = d->xsb;
-#endif
 }
 
 void
@@ -253,17 +226,15 @@ template(void)
 	const char *var;
 	const char *val;
 	const char *pat;
-	const char *str;
 	void *state;
-	struct dupctx d;
 
 	DUMPBUF();
 
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	str = dup(&d, pat);
-	DBG("('%s'@'%s'@'%s')\n", var, val, str);
+	dup(pat);
+	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	push(0);
 
 	/* suspend current lex state */
@@ -273,7 +244,7 @@ template(void)
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s':='%s')\n", var, val);
-		(*scan_ops.proc)(str);
+		(*scan_ops.proc)(pat);
 	}
 	delsym(var);
 
