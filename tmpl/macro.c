@@ -36,7 +36,7 @@
 		char c = *str; \
 		char l = '['; \
 		if (c < 0x20) \
-			fprintf(stderr, "%c\\%c%c", l, (cs[c] == 0) ? '?' : cs[c], l + 2); \
+			fprintf(stderr, "%c\\%c%c", l, (cs[(int)c] == 0) ? '?' : cs[(int)c], l + 2); \
 		else \
 			fprintf(stderr, "%c %c%c", l, c, l + 2); \
 	} \
@@ -144,7 +144,7 @@ save(char c)
 		l = '[';
 	}
 	if (c < 0x20)
-		DBG("%c\\%c%c\n", l, (cs[c] == 0) ? '?' : cs[c], l + 2);
+		DBG("%c\\%c%c\n", l, (cs[(int)c] == 0) ? '?' : cs[(int)c], l + 2);
 	else
 		DBG("%c %c%c\n", l, c, l + 2);
 }
@@ -223,6 +223,7 @@ template(void)
 	const char *pat;
 	char *str;
 	void *state;
+	char c;
 
 	DBG(">>>\n");
 	DUMPBUF();
@@ -253,8 +254,7 @@ template(void)
 
 	DUMPBUF();
 	(void)pop(&pat);
-	int c;
-	while ((c = *pat++) != NULL)
+	while ((c = *pat++) != '\0')
 		save(c);
 	DUMPBUF();
 
