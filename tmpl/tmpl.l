@@ -27,7 +27,8 @@ static void macro_end(void);
 enum op {
 	MACRO = 1,
 	DEFINE,
-	TEMPLATE,
+	TMPLVAR,
+	TMPLVAL,
 };
 %}
 
@@ -117,7 +118,8 @@ define_delim(void)
 	case DEFINE:
 		push(DEFINE);
 		break;
-	case TEMPLATE:
+	case TMPLVAR:
+	case TMPLVAL:
 	default:
 		yy_fatal_error("~= outside macro define!!!");
 	}
@@ -128,8 +130,10 @@ template_delim(void)
 {
 	switch (end()) {
 	case MACRO:
-	case TEMPLATE:
-		push(TEMPLATE);
+		push(TMPLVAR);
+		break;
+	case TMPLVAR:
+		push(TMPLVAL);
 		break;
 	case DEFINE:
 	default:
@@ -161,7 +165,7 @@ macro_end(void)
 		while (define(var, &var) != MACRO)
 			continue;
 		break;
-	case TEMPLATE:
+	case TMPLVAL:
 		template();
 		break;
 	default:

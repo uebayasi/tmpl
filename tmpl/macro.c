@@ -156,8 +156,12 @@ int
 end(void)
 {
 	save('\0');
-	fp->sym = newsym(fb->head);
-	sb->tail = fb->tail = fb->head;
+	if (fp->op == 4/* XXX */)
+		;
+	else {
+		fp->sym = newsym(fb->head);
+		sb->tail = fb->tail = fb->head;
+	}
 	return fp->op;
 }
 
