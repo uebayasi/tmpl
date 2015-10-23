@@ -72,7 +72,6 @@ struct {
 	struct strbuf all;
 	struct strbuf cur;
 } ss;
-#define	fb	(&fp->strbuf)
 #define	sb	(&ss.cur)
 #define	ab	(&ss.all)
 
@@ -151,7 +150,7 @@ push(int op)
 	stack.depth--;
 
 	/* init new frame */
-	ss_push(fb);
+	ss_push(&fp->buf);
 	fp->sym = NULL;
 	fp->op = op;
 }
@@ -172,10 +171,10 @@ pop(const char **rsym)
 	if (fp->sym != NULL && fp->sym != (void *)-1)
 		sym = fp->sym;
 	else
-		sym = ss_get(fb);
+		sym = ss_get(&fp->buf);
 
 	/* fini current frame */
-	ss_pop(fb);
+	ss_pop(&fp->buf);
 	op = fp->op;
 	fp->op = 0;
 	if (stack.depth == MACRO_DEPTH - 1)
@@ -194,7 +193,7 @@ dupstr(const char *s)
 {
 	while (*s++ != '\0')
 		continue;
-	ss_dup(fb, s);
+	ss_dup(&fp->buf, s);
 }
 
 void
@@ -208,7 +207,7 @@ save(char c)
 	} else {
 		if (ss_is_limit())
 			ERR("buffer overflow!!!\n");
-		ss_put(fb, c);
+		ss_put(&fp->buf, c);
 		l = '[';
 	}
 	DBGINDENT();
@@ -229,8 +228,8 @@ end(void)
 {
 	save('\0');
 	if (fp->sym != (void *)-1) {
-		fp->sym = newsym(ss_get(fb));
-		ss_pop(fb);
+		fp->sym = newsym(ss_get(&fp->buf));
+		ss_pop(&fp->buf);
 	}
 	return fp->op;
 }
