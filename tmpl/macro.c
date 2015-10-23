@@ -26,7 +26,7 @@
 #else
 #define	DBG(...)	do { \
 	int d = stack.depth; \
-	while (d++ < MACRO_DEPTH) fputc(' ', stderr); \
+	while (d++ < MACRO_DEPTH) fputc('\t', stderr); \
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
 #define	DUMPBUF()	do { \
@@ -223,7 +223,6 @@ template(void)
 	const char *pat;
 	char *str;
 	void *state;
-	char c;
 
 	DBG(">>>\n");
 	DUMPBUF();
@@ -254,8 +253,7 @@ template(void)
 
 	DUMPBUF();
 	(void)pop(&pat);
-	while ((c = *pat++) != '\0')
-		save(c);
+	savestr(pat);
 	DUMPBUF();
 
 	/* resume previous lex state */
