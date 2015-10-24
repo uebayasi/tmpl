@@ -8,7 +8,7 @@
 #else
 #define	DEBUG
 #define	DBGINDENT()	do { \
-	int d = fp - &frames[0]; \
+	int d = depth(); \
 	while (d++ < MACRO_DEPTH - 1) fputc('\t', stderr); \
 } while (0)
 #define	DBG(...)	do { \

@@ -27,10 +27,6 @@ struct frame {
 	int op;
 };
 
-struct stack {
-	struct frame *frames;
-};
-
 struct macro_scan_ops {
 	void (*proc)(const char *);
 	void *(*suspend)(void);

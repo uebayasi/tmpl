@@ -28,7 +28,6 @@
 
 struct frame frames[MACRO_DEPTH];
 struct frame *fp;
-struct stack stack;
 
 struct macro_scan_ops scan_ops;
 
@@ -44,23 +43,28 @@ initmacro(struct macro_scan_ops *ops)
 	static char chars[STRBUF_MAX];
 
 	initsym();
-	stack.frames = &frames[0];
-	fp = &stack.frames[MACRO_DEPTH - 1];
+	fp = &frames[MACRO_DEPTH - 1];
 	ss_alloc(chars, STRBUF_MAX);
 	scan_ops = *ops;
+}
+
+static int
+depth(void)
+{
+	return (fp - &frames[0]);
 }
 
 int
 ispushed(void)
 {
-	return (fp - &frames[0] < MACRO_DEPTH - 1);
+	return (depth() < MACRO_DEPTH - 1);
 }
 
 void
 push(int op)
 {
 	/* get new frame */
-	if (fp - &frames[0] == 0)
+	if (depth() == 0)
 		ERR("stack too deep!!!\n");
 	DBG("-%d\n", op);
 	fp--;
@@ -93,7 +97,7 @@ pop(const char **rsym)
 	ss_pop(&fp->buf);
 	op = fp->op;
 	fp->op = 0;
-	if (fp - &frames[0] == MACRO_DEPTH - 1)
+	if (depth() == MACRO_DEPTH - 1)
 		ERR("cannot pop stack!!!\n");
 
 	/* put current frame */
