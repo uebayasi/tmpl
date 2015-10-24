@@ -84,17 +84,13 @@ pop(const char **rsym)
 void
 save(char c)
 {
-	char l;
-
-	if (fp == top) {
+	if (fp == top)
 		(*scan.one)(c);
-		l = '{';
-	} else {
+	else {
 		if (ss_put(&fp->buf, c))
 			ERR("cannot push char!!!\n");
-		l = '[';
 	}
-	DUMPCHAR(l, c);
+	DUMPCHAR((fp == top) ? '{' : '[', c);
 }
 
 static void
