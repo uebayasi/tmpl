@@ -28,7 +28,7 @@
 	exit(1); \
 } while (0)
 
-struct frame *fp, *top, *bottom;
+struct frame *fp, *top, *bot;
 struct macro_scan_ops scan;
 
 #ifdef DEBUG
@@ -47,21 +47,15 @@ initmacro(struct macro_scan_ops *o)
 
 	initsym();
 	ss_alloc(chars, chars + STRBUF_MAX - 1);
-	bottom = &frames[0];
-	fp = top = bottom + MACRO_DEPTH - 1;
+	bot = &frames[0];
+	fp = top = bot + MACRO_DEPTH - 1;
 	scan = *o;
-}
-
-static int
-ispushed(void)
-{
-	return (fp < top);
 }
 
 void
 push(int op)
 {
-	if (fp == bottom)
+	if (fp == bot)
 		ERR("stack too deep!!!\n");
 	DBG("-%d\n", op);
 	fp--;
@@ -100,7 +94,7 @@ save(char c)
 {
 	char l;
 
-	if (!ispushed()) {
+	if (fp == top) {
 		fputc(c, stdout);
 		l = '{';
 	} else {
