@@ -155,9 +155,7 @@ macro_end(void)
 		break;
 	case DEFINE:
 		new();
-		var = NULL;
-		while (define(var, &var) != MACRO)
-			continue;
+		define(MACRO);
 		break;
 	case TMPLVAL:
 		template();

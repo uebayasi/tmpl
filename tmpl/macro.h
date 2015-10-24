@@ -39,7 +39,7 @@ int pop(const char **);
 void save(char c);
 int delim(void);
 void new(void);
-int define(const char *, const char **);
+void define(int);
 void expand(void);
 void template(void);
 

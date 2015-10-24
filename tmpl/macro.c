@@ -95,22 +95,6 @@ pop(const char **rsym)
 	return op;
 }
 
-static void
-dup(const char *s)
-{
-	ss_dup(&fp->buf, s);
-	push(0);
-}
-
-static void
-undup(void)
-{
-	const char *s;
-
-	(void)pop(&s);
-	savestr(s);
-}
-
 void
 save(char c)
 {
@@ -143,12 +127,29 @@ delim(void)
 	return fp->op;
 }
 
-int
-define(const char *var, const char **rvar)
+static void
+dup(const char *s)
 {
-	const char *val;
+	ss_dup(&fp->buf, s);
+	push(0);
+}
+
+static void
+undup(void)
+{
+	const char *s;
+
+	(void)pop(&s);
+	savestr(s);
+}
+
+void
+define(int end)
+{
+	const char *var = NULL, *val;
 	int op;
 
+again:
 	if (var == NULL)
 		(void)pop(&val);
 	else
@@ -156,8 +157,10 @@ define(const char *var, const char **rvar)
 	op = pop(&var);
 	setsym(newsym(var), newsym(val));
 	DBG("('%s'<='%s')\n", var, val);
-	*rvar = var;
-	return op;
+	if (op == end)
+		return;
+	else
+		goto again;
 }
 
 static void
