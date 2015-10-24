@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "macro.h"
+#include "ss.h"
 #include "sym.h"
 #include "dbg.h"
 
@@ -36,62 +37,6 @@ const char cs[20] = {
 	[10] = 'n',
 };
 #define	vc(c)	(cs[(int)c])
-
-struct {
-	struct strbuf all;
-	struct strbuf cur;
-} ss;
-#define	sb	(&ss.cur)
-#define	ab	(&ss.all)
-
-static void
-ss_alloc(void)
-{
-	static char chars[STRBUF_MAX];
-
-	sb->head = &chars[0];
-	sb->tail = &chars[0];
-	ab->head = &chars[0];
-	ab->tail = &chars[STRBUF_MAX];
-}
-
-const char *
-ss_get(struct strbuf *b)
-{
-	return b->head;
-}
-
-static void
-ss_put(struct strbuf *b, char c)
-{
-	*sb->tail++ = c;
-	b->tail++;
-}
-
-static void
-ss_push(struct strbuf *b)
-{
-	b->head = b->tail = sb->tail;
-}
-
-static void
-ss_pop(struct strbuf *b)
-{
-	sb->tail = b->tail = b->head;
-}
-
-static void
-ss_dup(struct strbuf *b, const char *s)
-{
-	sb->tail = s;
-	ss_push(b);
-}
-
-static int
-ss_is_limit(void)
-{
-	return (sb->head == ab->tail);
-}
 
 void
 initmacro(struct macro_scan_ops *ops)

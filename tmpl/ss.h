@@ -14,39 +14,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _MACRO_H_
-#define _MACRO_H_
+#ifndef _SS_H_
+#define _SS_H_
 
-#include "ss.h"
-
-#include "macro_config.h"
-
-struct frame {
-	struct strbuf buf;
-	const char *sym;
-	int op;
+struct strbuf {
+	char *head, *tail;
 };
 
-struct stack {
-	struct frame *frames;
-	int depth;
-};
+void ss_alloc(void);
+const char *ss_get(struct strbuf *);
+void ss_put(struct strbuf *b, char c);
+void ss_push(struct strbuf *b);
+void ss_pop(struct strbuf *b);
+void ss_dup(struct strbuf *b, const char *s);
+int ss_is_limit(void);
 
-struct macro_scan_ops {
-	void (*proc)(const char *);
-	void *(*suspend)(void);
-	void (*resume)(void *);
-};
-
-void initmacro(struct macro_scan_ops *);
-int ispushed(void);
-void push(int);
-void pushstr(int);
-int pop(const char **);
-void save(char c);
-int end(void);
-int define(const char *, const char **);
-void expand(void);
-void template(void);
-
-#endif /* _MACRO_H_ */
+#endif /* _SS_H_ */

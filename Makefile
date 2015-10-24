@@ -4,13 +4,15 @@ CC=	cc -Wall -g -O0
 
 all: ./tmpl/tmpl.exe test
 
-./tmpl/tmpl.exe: ./tmpl/tmpl.o ./tmpl/macro.o ./tmpl/sym.o ./symtab/symtab.o
-	${CC} -o ./tmpl/tmpl.exe ./tmpl/tmpl.o ./tmpl/macro.o ./tmpl/sym.o ./symtab/symtab.o -ll
+./tmpl/tmpl.exe: ./tmpl/tmpl.o ./tmpl/macro.o ./tmpl/ss.o ./tmpl/sym.o ./symtab/symtab.o
+	${CC} -o ./tmpl/tmpl.exe ./tmpl/tmpl.o ./tmpl/macro.o ./tmpl/ss.o ./tmpl/sym.o ./symtab/symtab.o -ll
 ./tmpl/tmpl.o: ./tmpl/tmpl.c
 	${CC} -o ./tmpl/tmpl.o -c ./tmpl/tmpl.c
 ./tmpl/tmpl.c: ./tmpl/tmpl.l
 	flex -o./tmpl/tmpl.c ./tmpl/tmpl.l
 
+./tmpl/ss.o: ./tmpl/ss.c
+	${CC} -o ./tmpl/ss.o -c ./tmpl/ss.c
 ./tmpl/sym.o: ./tmpl/sym.c
 	${CC} -o ./tmpl/sym.o -c ./tmpl/sym.c
 ./tmpl/macro.o: ./tmpl/macro.c

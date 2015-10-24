@@ -14,39 +14,61 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _MACRO_H_
-#define _MACRO_H_
-
 #include "ss.h"
+#include "macro.h" /* XXX STRBUF_MAX */
 
-#include "macro_config.h"
+static struct {
+	struct strbuf all;
+	struct strbuf cur;
+} ss;
+#define	sb	(&ss.cur)
+#define	ab	(&ss.all)
 
-struct frame {
-	struct strbuf buf;
-	const char *sym;
-	int op;
-};
+void
+ss_alloc(void)
+{
+	static char chars[STRBUF_MAX];
 
-struct stack {
-	struct frame *frames;
-	int depth;
-};
+	sb->head = &chars[0];
+	sb->tail = &chars[0];
+	ab->head = &chars[0];
+	ab->tail = &chars[STRBUF_MAX];
+}
 
-struct macro_scan_ops {
-	void (*proc)(const char *);
-	void *(*suspend)(void);
-	void (*resume)(void *);
-};
+const char *
+ss_get(struct strbuf *b)
+{
+	return b->head;
+}
 
-void initmacro(struct macro_scan_ops *);
-int ispushed(void);
-void push(int);
-void pushstr(int);
-int pop(const char **);
-void save(char c);
-int end(void);
-int define(const char *, const char **);
-void expand(void);
-void template(void);
+void
+ss_put(struct strbuf *b, char c)
+{
+	*sb->tail++ = c;
+	b->tail++;
+}
 
-#endif /* _MACRO_H_ */
+void
+ss_push(struct strbuf *b)
+{
+	b->head = b->tail = sb->tail;
+}
+
+void
+ss_pop(struct strbuf *b)
+{
+	sb->tail = b->tail = b->head;
+}
+
+void
+ss_dup(struct strbuf *b, const char *s)
+{
+	sb->tail = s;
+	ss_push(b);
+}
+
+int
+ss_is_limit(void)
+{
+	return (sb->head == ab->tail);
+}
