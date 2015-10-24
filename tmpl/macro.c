@@ -29,7 +29,7 @@
 } while (0)
 
 struct frame *fp, *top, *bottom;
-struct macro_scan_ops ops;
+struct macro_scan_ops scan;
 
 #ifdef DEBUG
 const char cs[20] = {
@@ -49,7 +49,7 @@ initmacro(struct macro_scan_ops *o)
 	ss_alloc(chars, chars + STRBUF_MAX - 1);
 	bottom = &frames[0];
 	fp = top = bottom + MACRO_DEPTH - 1;
-	ops = *o;
+	scan = *o;
 }
 
 static int
@@ -196,13 +196,13 @@ template(void)
 	(void)pop(&var);
 	dup(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
-	state = (*ops.suspend)();
+	state = (*scan.suspend)();
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s':='%s')\n", var, val);
-		(*ops.proc)(pat);
+		(*scan.proc)(pat);
 	}
 	delsym(var);
-	(*ops.resume)(state);
+	(*scan.resume)(state);
 	undup();
 }
