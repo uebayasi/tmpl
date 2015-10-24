@@ -114,8 +114,7 @@ save(char c)
 			ERR("cannot push char!!!\n");
 		l = '[';
 	}
-	DBGINDENT();
-	DUMPCHAR(l, c, "\n");
+	DUMPCHAR(l, c);
 }
 
 static void
