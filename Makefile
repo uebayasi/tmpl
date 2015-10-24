@@ -1,6 +1,10 @@
 # tmpl
 
-CC=	cc -Wall -g -O0
+# common
+
+CFLAGS=		-Wall -g -O0
+CPPFLAGS=	-DDEBUG
+CC=		cc ${CPPFLAGS} ${CFLAGS}
 
 all: ./tmpl/tmpl.exe test
 
@@ -44,6 +48,8 @@ symtab_o_OBJS= \
 
 clean:
 	rm -f ./tmpl/tmpl.c */*.o */*.exe ./tests/*.out ./tests/*.err
+
+# suffix rules
 
 .SUFFIXES: .c .o
 	${CC} -o $@ -c $<
