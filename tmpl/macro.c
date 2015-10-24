@@ -72,13 +72,6 @@ push(int op)
 }
 
 void
-pushstr(int op)
-{
-	push(op);
-	fp->sym = (void *)-1;
-}
-
-void
 new(void)
 {
 	fp->sym = newsym(ss_pop(&fp->buf));
@@ -91,7 +84,7 @@ pop(const char **rsym)
 	int op;
 
 	/* XXX */
-	if (fp->sym != NULL && fp->sym != (void *)-1)
+	if (fp->sym != NULL)
 		sym = fp->sym;
 	else
 		sym = ss_pop(&fp->buf);

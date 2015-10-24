@@ -136,7 +136,7 @@ template_delim(void)
 		break;
 	case TMPLVAR:
 		new();
-		pushstr(TMPLVAL);
+		push(TMPLVAL);
 		break;
 	case DEFINE:
 	default:
