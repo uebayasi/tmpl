@@ -14,14 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "ss.h"
-
-#define ERR(...) do { \
-	fprintf(stderr, __VA_ARGS__); \
-	exit(1); \
-} while (0)
 
 static struct {
 	struct strbuf all;
@@ -42,13 +35,16 @@ ss_pop(struct strbuf *b)
 	return b->head;
 }
 
-void
+int
 ss_put(struct strbuf *b, char c)
 {
 	if (ss.cur.head == ss.all.tail)
-		ERR("buffer overflow!!!\n");
-	*ss.cur.tail++ = c;
-	b->tail++;
+		return 1;
+	else {
+		*ss.cur.tail++ = c;
+		b->tail++;
+		return 0;
+	}
 }
 
 void

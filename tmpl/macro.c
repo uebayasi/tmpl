@@ -110,7 +110,8 @@ save(char c)
 		fputc(c, stdout);
 		l = '{';
 	} else {
-		ss_put(&fp->buf, c);
+		if (ss_put(&fp->buf, c))
+			ERR("cannot push char!!!\n");
 		l = '[';
 	}
 	DBGINDENT();
