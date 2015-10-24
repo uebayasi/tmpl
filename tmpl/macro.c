@@ -64,12 +64,6 @@ push(int op)
 	fp->op = op;
 }
 
-void
-new(void)
-{
-	fp->sym = newsym(ss_pop(&fp->buf));
-}
-
 int
 pop(const char **rsym)
 {
@@ -119,6 +113,12 @@ delim(void)
 {
 	save('\0');
 	return fp->op;
+}
+
+void
+new(void)
+{
+	fp->sym = newsym(ss_pop(&fp->buf));
 }
 
 static void
