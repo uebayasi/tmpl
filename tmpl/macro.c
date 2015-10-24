@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+//#define	DEBUG
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "macro.h"
@@ -31,11 +33,13 @@ struct frame *fp;
 
 struct macro_scan_ops scan_ops;
 
+#ifdef DEBUG
 const char cs[20] = {
 	[0] = '0',
 	[10] = 'n',
 };
 #define	vc(c)	(cs[(int)c])
+#endif
 
 void
 initmacro(struct macro_scan_ops *ops)

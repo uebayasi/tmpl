@@ -1,12 +1,11 @@
 /* dbg */
 
-#if 0
+#ifndef DEBUG
 #define	DBG(...)	do {} while (0)
 #define	DBGINDENT()	do {} while (0)
-#define	DUMPCHAR()	do {} while (0)
+#define	DUMPCHAR(l,c,n)	do {} while (0)
 #define	DUMPBUF()	do {} while (0)
 #else
-#define	DEBUG
 #define	DBGINDENT()	do { \
 	int d = depth(); \
 	while (d++ < MACRO_DEPTH - 1) fputc('\t', stderr); \
