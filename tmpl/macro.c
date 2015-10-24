@@ -120,14 +120,14 @@ new(void)
 }
 
 static void
-keep(const char *s)
+remember(const char *s)
 {
 	ss_keep(&fp->buf, s);
 	push(0);
 }
 
 static void
-unkeep(void)
+forget(void)
 {
 	const char *s;
 
@@ -186,7 +186,7 @@ template(void)
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	keep(pat);
+	remember(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	state = (*scan.suspend)();
 	while ((val = getsym(val)) != NULL) {
@@ -196,5 +196,5 @@ template(void)
 	}
 	delsym(var);
 	(*scan.resume)(state);
-	unkeep();
+	forget();
 }
