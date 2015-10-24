@@ -31,10 +31,10 @@ ss_alloc(const char *head, const char *tail)
 }
 
 const char *
-ss_pop(char **rs)
+ss_pop(struct ss *ss)
 {
-	cur.tail = *rs;
-	return *rs;
+	cur.tail = ss->s;
+	return ss->s;
 }
 
 int
@@ -49,16 +49,16 @@ ss_put(char c)
 }
 
 void
-ss_push(char **rs)
+ss_push(struct ss *ss)
 {
-	*rs = cur.tail;
+	ss->s = cur.tail;
 }
 
 void
-ss_keep(char **rs, const char *s)
+ss_keep(struct ss *ss, const char *s)
 {
 	while (*s++ != '\0')
 		continue;
 	cur.tail = s;
-	ss_push(rs);
+	ss_push(ss);
 }

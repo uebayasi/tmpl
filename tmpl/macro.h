@@ -17,10 +17,12 @@
 #ifndef _MACRO_H_
 #define _MACRO_H_
 
+#include "ss.h"
+
 #include "macro_config.h"
 
 struct frame {
-	char *buf;
+	struct ss ss;
 	const char *sym;
 	int op;
 };
