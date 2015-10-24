@@ -29,7 +29,7 @@ ss_alloc(const char *head, const char *tail)
 const char *
 ss_pop(struct strbuf *b)
 {
-	cur.tail = b->tail = b->head;
+	cur.tail = b->head;
 	return b->head;
 }
 
@@ -40,7 +40,6 @@ ss_put(struct strbuf *b, char c)
 		return 1;
 	else {
 		*cur.tail++ = c;
-		b->tail++;
 		return 0;
 	}
 }
@@ -48,7 +47,7 @@ ss_put(struct strbuf *b, char c)
 void
 ss_push(struct strbuf *b)
 {
-	b->head = b->tail = cur.tail;
+	b->head = cur.tail;
 }
 
 void
