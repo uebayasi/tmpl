@@ -67,13 +67,11 @@ ispushed(void)
 void
 push(int op)
 {
-	/* get new frame */
 	if (depth() == 0)
 		ERR("stack too deep!!!\n");
 	DBG("-%d\n", op);
 	fp--;
 
-	/* init new frame */
 	ss_push(&fp->buf);
 	fp->sym = NULL;
 	fp->op = op;
@@ -96,14 +94,10 @@ pop(const char **rsym)
 		sym = fp->sym;
 	else
 		sym = ss_pop(&fp->buf);
-
-	/* fini current frame */
 	op = fp->op;
-	fp->op = 0;
+
 	if (depth() == MACRO_DEPTH - 1)
 		ERR("cannot pop stack!!!\n");
-
-	/* put current frame */
 	fp++;
 	DBG("+%d\n", op);
 	
@@ -128,8 +122,6 @@ save(char c)
 		fputc(c, stdout);
 		l = '{';
 	} else {
-		if (ss_is_limit())
-			ERR("buffer overflow!!!\n");
 		ss_put(&fp->buf, c);
 		l = '[';
 	}
