@@ -29,7 +29,6 @@ struct frame {
 
 struct stack {
 	struct frame *frames;
-	int depth;
 };
 
 struct macro_scan_ops {
