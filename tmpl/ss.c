@@ -32,8 +32,9 @@ ss_alloc(const char *buf, unsigned long size)
 }
 
 const char *
-ss_get(struct strbuf *b)
+ss_pop(struct strbuf *b)
 {
+	sb->tail = b->tail = b->head;
 	return b->head;
 }
 
@@ -48,12 +49,6 @@ void
 ss_push(struct strbuf *b)
 {
 	b->head = b->tail = sb->tail;
-}
-
-void
-ss_pop(struct strbuf *b)
-{
-	sb->tail = b->tail = b->head;
 }
 
 void

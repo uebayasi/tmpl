@@ -47,8 +47,8 @@ initmacro(struct macro_scan_ops *ops)
 	static char chars[STRBUF_MAX];
 
 	initsym();
-	fp = &frames[MACRO_DEPTH - 1];
 	ss_alloc(chars, STRBUF_MAX);
+	fp = &frames[MACRO_DEPTH - 1];
 	scan_ops = *ops;
 }
 
@@ -95,10 +95,9 @@ pop(const char **rsym)
 	if (fp->sym != NULL && fp->sym != (void *)-1)
 		sym = fp->sym;
 	else
-		sym = ss_get(&fp->buf);
+		sym = ss_pop(&fp->buf);
 
 	/* fini current frame */
-	ss_pop(&fp->buf);
 	op = fp->op;
 	fp->op = 0;
 	if (depth() == MACRO_DEPTH - 1)
@@ -152,8 +151,7 @@ end(void)
 {
 	save('\0');
 	if (fp->sym != (void *)-1) {
-		fp->sym = newsym(ss_get(&fp->buf));
-		ss_pop(&fp->buf);
+		fp->sym = newsym(ss_pop(&fp->buf));
 	}
 	return fp->op;
 }
