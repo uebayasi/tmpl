@@ -52,7 +52,7 @@ initmacro(struct macro_scan_ops *o)
 	ops = *o;
 }
 
-int
+static int
 ispushed(void)
 {
 	return (fp < top);

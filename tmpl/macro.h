@@ -34,7 +34,6 @@ struct macro_scan_ops {
 };
 
 void initmacro(struct macro_scan_ops *);
-int ispushed(void);
 void push(int);
 int pop(const char **);
 void save(char c);
