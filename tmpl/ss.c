@@ -25,11 +25,10 @@ ss_alloc(const char *p, const char *q)
 	tail = q;
 }
 
-const char *
+void
 ss_pop(char **rs)
 {
 	cur = *rs;
-	return *rs;
 }
 
 int

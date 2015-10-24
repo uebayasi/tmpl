@@ -70,8 +70,10 @@ pop(const char **rsym)
 
 	if (fp->sym != NULL)
 		sym = fp->sym;
-	else
-		sym = ss_pop(&fp->buf);
+	else {
+		ss_pop(&fp->buf);
+		sym = fp->buf;
+	}
 	op = fp->op;
 	if (fp == top)
 		ERR("cannot pop stack!!!\n");
@@ -112,7 +114,8 @@ delim(void)
 void
 new(void)
 {
-	fp->sym = newsym(ss_pop(&fp->buf));
+	ss_pop(&fp->buf);
+	fp->sym = newsym(fp->buf);
 }
 
 static void

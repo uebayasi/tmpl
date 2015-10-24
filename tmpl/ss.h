@@ -18,7 +18,7 @@
 #define _SS_H_
 
 void ss_alloc(const char *, const char *);
-const char *ss_pop(char **);
+void ss_pop(char **);
 int ss_put(char);
 void ss_push(char **);
 void ss_keep(char **, const char *s);
