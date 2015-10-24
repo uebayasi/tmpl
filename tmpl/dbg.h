@@ -8,7 +8,7 @@
 #else
 #define	DBGINDENT()	do { \
 	int d = top - fp; \
-	while (d++ < MACRO_DEPTH - 1) fputc('\t', stderr); \
+	while (d-- > 0) fputc('\t', stderr); \
 } while (0)
 #define	DBG(...)	do { \
 	DBGINDENT(); \
