@@ -40,6 +40,8 @@ void pushstr(int);
 int pop(const char **);
 void save(char c);
 int end(void);
+int delim(void);
+void new(void);
 int define(const char *, const char **);
 void expand(void);
 void template(void);

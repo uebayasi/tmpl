@@ -78,12 +78,19 @@ pushstr(int op)
 	fp->sym = (void *)-1;
 }
 
+void
+new(void)
+{
+	fp->sym = newsym(ss_pop(&fp->buf));
+}
+
 int
 pop(const char **rsym)
 {
 	const char *sym;
 	int op;
 
+	/* XXX */
 	if (fp->sym != NULL && fp->sym != (void *)-1)
 		sym = fp->sym;
 	else
@@ -131,12 +138,9 @@ savestr(const char *s)
 }
 
 int
-end(void)
+delim(void)
 {
 	save('\0');
-	if (fp->sym != (void *)-1) {
-		fp->sym = newsym(ss_pop(&fp->buf));
-	}
 	return fp->op;
 }
 

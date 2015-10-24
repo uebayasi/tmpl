@@ -113,9 +113,10 @@ macro_start(void)
 static void
 define_delim(void)
 {
-	switch (end()) {
+	switch (delim()) {
 	case MACRO:
 	case DEFINE:
+		new();
 		push(DEFINE);
 		break;
 	case TMPLVAR:
@@ -128,11 +129,13 @@ define_delim(void)
 static void
 template_delim(void)
 {
-	switch (end()) {
+	switch (delim()) {
 	case MACRO:
+		new();
 		push(TMPLVAR);
 		break;
 	case TMPLVAR:
+		new();
 		pushstr(TMPLVAL);
 		break;
 	case DEFINE:
@@ -156,11 +159,13 @@ macro_end(void)
 {
 	const char *var;
 
-	switch (end()) {
+	switch (delim()) {
 	case MACRO:
+		new();
 		expand();
 		break;
 	case DEFINE:
+		new();
 		var = NULL;
 		while (define(var, &var) != MACRO)
 			continue;
