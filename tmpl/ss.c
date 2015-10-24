@@ -25,12 +25,6 @@ ss_alloc(const char *p, const char *q)
 	tail = q;
 }
 
-void
-ss_pop(char **rs)
-{
-	cur = *rs;
-}
-
 int
 ss_put(char c)
 {
@@ -46,6 +40,12 @@ void
 ss_push(char **rs)
 {
 	*rs = cur;
+}
+
+void
+ss_pop(char **rs)
+{
+	cur = *rs;
 }
 
 void
