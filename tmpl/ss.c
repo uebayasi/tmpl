@@ -17,15 +17,15 @@
 #include "ss.h"
 
 static struct {
-	struct strbuf all;
+	struct strbuf buf;
 	struct strbuf cur;
 } ss;
 
 void
 ss_alloc(const char *head, const char *tail)
 {
-	ss.cur.head = ss.cur.tail = ss.all.head = head;
-	ss.all.tail = tail;
+	ss.cur.head = ss.cur.tail = ss.buf.head = head;
+	ss.buf.tail = tail;
 }
 
 const char *
@@ -38,7 +38,7 @@ ss_pop(struct strbuf *b)
 int
 ss_put(struct strbuf *b, char c)
 {
-	if (ss.cur.head == ss.all.tail)
+	if (ss.cur.head == ss.buf.tail)
 		return 1;
 	else {
 		*ss.cur.tail++ = c;
