@@ -146,8 +146,6 @@ template_delim(void)
 static void
 macro_end(void)
 {
-	const char *var;
-
 	switch (delim()) {
 	case MACRO:
 		new();
