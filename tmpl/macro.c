@@ -147,20 +147,17 @@ void
 define(int end)
 {
 	const char *var = NULL, *val;
-	int op;
+	int op = -1;
 
-again:
-	if (var == NULL)
-		(void)pop(&val);
-	else
-		val = var;
-	op = pop(&var);
-	setsym(newsym(var), newsym(val));
-	DBG("('%s'<='%s')\n", var, val);
-	if (op == end)
-		return;
-	else
-		goto again;
+	while (op != end) {
+		if (var == NULL)
+			(void)pop(&val);
+		else
+			val = var;
+		op = pop(&var);
+		setsym(newsym(var), newsym(val));
+		DBG("('%s'<='%s')\n", var, val);
+	}
 }
 
 static void
