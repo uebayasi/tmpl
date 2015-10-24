@@ -19,7 +19,7 @@
 	if ((c) < 0x20) \
 		fprintf(stderr, "%c%c%c%c%s", (l), '\\', VC(c), (l) + 2, (n)); \
 	else \
-		fprintf(stderr, "%c%c%c%c%s", (l), ' ', c, (l) + 2, (n)); \
+		fprintf(stderr, "%c%c%c%c%s", (l), ' ', (c), (l) + 2, (n)); \
 } while (0)
 #define	DUMPCHAR(l, c)	do { \
 	DBGINDENT(); \
