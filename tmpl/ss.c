@@ -29,10 +29,10 @@ static struct {
 } ss;
 
 void
-ss_alloc(const char *buf, unsigned long size)
+ss_alloc(const char *head, const char *tail)
 {
-	ss.cur.head = ss.cur.tail = ss.all.head = buf;
-	ss.all.tail = ss.all.head + size;
+	ss.cur.head = ss.cur.tail = ss.all.head = head;
+	ss.all.tail = tail;
 }
 
 const char *
