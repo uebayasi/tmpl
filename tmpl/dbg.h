@@ -14,10 +14,10 @@
 	DBGINDENT(); \
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
-#define	PC(c)		((vc(c) == 0) ? '?' : vc(c))
+#define	VC(c)		((vc(c) == 0) ? '?' : vc(c))
 #define	DBGCHAR(l, c, n)	do { \
 	if ((c) < 0x20) \
-		fprintf(stderr, "%c%c%c%c%s", (l), '\\', PC(c), (l) + 2, (n)); \
+		fprintf(stderr, "%c%c%c%c%s", (l), '\\', VC(c), (l) + 2, (n)); \
 	else \
 		fprintf(stderr, "%c%c%c%c%s", (l), ' ', c, (l) + 2, (n)); \
 } while (0)
