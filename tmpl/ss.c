@@ -16,32 +16,30 @@
 
 #include "ss.h"
 
-static struct {
-	struct strbuf buf;
-	struct strbuf cur;
-} ss;
+static struct strbuf buf;
+static struct strbuf cur;
 
 void
 ss_alloc(const char *head, const char *tail)
 {
-	ss.cur.head = ss.cur.tail = ss.buf.head = head;
-	ss.buf.tail = tail;
+	cur.head = cur.tail = buf.head = head;
+	buf.tail = tail;
 }
 
 const char *
 ss_pop(struct strbuf *b)
 {
-	ss.cur.tail = b->tail = b->head;
+	cur.tail = b->tail = b->head;
 	return b->head;
 }
 
 int
 ss_put(struct strbuf *b, char c)
 {
-	if (ss.cur.head == ss.buf.tail)
+	if (cur.head == buf.tail)
 		return 1;
 	else {
-		*ss.cur.tail++ = c;
+		*cur.tail++ = c;
 		b->tail++;
 		return 0;
 	}
@@ -50,7 +48,7 @@ ss_put(struct strbuf *b, char c)
 void
 ss_push(struct strbuf *b)
 {
-	b->head = b->tail = ss.cur.tail;
+	b->head = b->tail = cur.tail;
 }
 
 void
@@ -58,6 +56,6 @@ ss_keep(struct strbuf *b, const char *s)
 {
 	while (*s++ != '\0')
 		continue;
-	ss.cur.tail = s;
+	cur.tail = s;
 	ss_push(b);
 }
