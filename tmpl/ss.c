@@ -27,47 +27,41 @@ static struct {
 	struct strbuf all;
 	struct strbuf cur;
 } ss;
-#define	sb	(&ss.cur)
-#define	ab	(&ss.all)
 
 void
 ss_alloc(const char *buf, unsigned long size)
 {
-	sb->head = sb->tail = ab->head = buf;
-	ab->tail = ab->head + size;
+	ss.cur.head = ss.cur.tail = ss.all.head = buf;
+	ss.all.tail = ss.all.head + size;
 }
 
 const char *
 ss_pop(struct strbuf *b)
 {
-	sb->tail = b->tail = b->head;
+	ss.cur.tail = b->tail = b->head;
 	return b->head;
 }
 
 void
 ss_put(struct strbuf *b, char c)
 {
-	if (ss_is_limit())
+	if (ss.cur.head == ss.all.tail)
 		ERR("buffer overflow!!!\n");
-	*sb->tail++ = c;
+	*ss.cur.tail++ = c;
 	b->tail++;
 }
 
 void
 ss_push(struct strbuf *b)
 {
-	b->head = b->tail = sb->tail;
+	b->head = b->tail = ss.cur.tail;
 }
 
 void
 ss_dup(struct strbuf *b, const char *s)
 {
-	sb->tail = s;
+	while (*s++ != '\0')
+		continue;
+	ss.cur.tail = s;
 	ss_push(b);
-}
-
-int
-ss_is_limit(void)
-{
-	return (sb->head == ab->tail);
 }

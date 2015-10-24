@@ -106,10 +106,8 @@ pop(const char **rsym)
 }
 
 static void
-dupstr(const char *s)
+dup(const char *s)
 {
-	while (*s++ != '\0')
-		continue;
 	ss_dup(&fp->buf, s);
 }
 
@@ -200,7 +198,7 @@ template(void)
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	dupstr(pat);
+	dup(pat);
 	push(0);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 

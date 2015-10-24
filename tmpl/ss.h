@@ -26,6 +26,5 @@ const char *ss_pop(struct strbuf *);
 void ss_put(struct strbuf *b, char c);
 void ss_push(struct strbuf *b);
 void ss_dup(struct strbuf *b, const char *s);
-int ss_is_limit(void);
 
 #endif /* _SS_H_ */
