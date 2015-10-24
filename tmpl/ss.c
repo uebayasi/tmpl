@@ -25,14 +25,10 @@ static struct {
 #define	ab	(&ss.all)
 
 void
-ss_alloc(void)
+ss_alloc(const char *buf, unsigned long size)
 {
-	static char chars[STRBUF_MAX];
-
-	sb->head = &chars[0];
-	sb->tail = &chars[0];
-	ab->head = &chars[0];
-	ab->tail = &chars[STRBUF_MAX];
+	sb->head = sb->tail = ab->head = buf;
+	ab->tail = ab->head + size;
 }
 
 const char *

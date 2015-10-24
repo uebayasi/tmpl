@@ -41,10 +41,12 @@ const char cs[20] = {
 void
 initmacro(struct macro_scan_ops *ops)
 {
+	static char chars[STRBUF_MAX];
+
 	initsym();
 	stack.frames = &frames[0];
 	stack.depth = MACRO_DEPTH - 1;
-	ss_alloc();
+	ss_alloc(chars, STRBUF_MAX);
 	scan_ops = *ops;
 }
 

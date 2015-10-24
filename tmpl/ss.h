@@ -21,7 +21,7 @@ struct strbuf {
 	char *head, *tail;
 };
 
-void ss_alloc(void);
+void ss_alloc(const char *, unsigned long);
 const char *ss_get(struct strbuf *);
 void ss_put(struct strbuf *b, char c);
 void ss_push(struct strbuf *b);
