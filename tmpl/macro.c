@@ -87,7 +87,7 @@ save(char c)
 	if (fp == top)
 		(*scan.one)(c);
 	else {
-		if (ss_put(&fp->buf, c))
+		if (ss_put(c))
 			ERR("cannot push char!!!\n");
 	}
 	DUMPCHAR((fp == top) ? '{' : '[', c);

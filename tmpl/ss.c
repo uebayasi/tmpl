@@ -38,7 +38,7 @@ ss_pop(char **rs)
 }
 
 int
-ss_put(char **rs, char c)
+ss_put(char c)
 {
 	if (cur.head == buf.tail)
 		return 1;
