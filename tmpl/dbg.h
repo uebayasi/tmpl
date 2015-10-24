@@ -7,7 +7,7 @@
 #define	DUMPBUF()	do {} while (0)
 #else
 #define	DBGINDENT()	do { \
-	int d = depth(); \
+	int d = top - fp; \
 	while (d++ < MACRO_DEPTH - 1) fputc('\t', stderr); \
 } while (0)
 #define	DBG(...)	do { \
@@ -15,7 +15,7 @@
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
 #define	PC(c)		((vc(c) == 0) ? '?' : vc(c))
-#define	DNGCHAR(l, c, n)	do { \
+#define	DBGCHAR(l, c, n)	do { \
 	if ((c) < 0x20) \
 		fprintf(stderr, "%c%c%c%c%s", (l), '\\', PC(c), (l) + 2, (n)); \
 	else \
