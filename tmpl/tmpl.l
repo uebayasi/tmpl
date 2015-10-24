@@ -80,6 +80,7 @@ at	[@]
 
 #include "macro.h"
 
+static void macro_one(char);
 static void macro_proc(const char *);
 static void *macro_suspend(void);
 static void macro_resume(void *);
@@ -88,6 +89,7 @@ int
 main(int argc, char *argv[])
 {
 	struct macro_scan_ops ops = {
+		.one = &macro_one,
 		.proc = &macro_proc,
 		.suspend = &macro_suspend,
 		.resume = &macro_resume,
@@ -162,6 +164,12 @@ macro_end(void)
 		yy_fatal_error("out-of-context macro end!!!");
 		break;
 	}
+}
+
+static void
+macro_one(char c)
+{
+	fputc(c, stdout);
 }
 
 static void

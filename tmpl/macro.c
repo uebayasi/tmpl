@@ -87,7 +87,7 @@ save(char c)
 	char l;
 
 	if (fp == top) {
-		fputc(c, stdout);
+		(*scan.one)(c);
 		l = '{';
 	} else {
 		if (ss_put(&fp->buf, c))
