@@ -83,7 +83,6 @@ pop(const char **rsym)
 	const char *sym;
 	int op;
 
-	/* XXX */
 	if (fp->sym != NULL)
 		sym = fp->sym;
 	else
