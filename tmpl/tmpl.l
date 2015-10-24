@@ -21,7 +21,6 @@ static void just(void);
 static void macro_start(void);
 static void define_delim(void);
 static void template_delim(void);
-static void macro_close(void);
 static void macro_end(void);
 
 enum op {
@@ -65,7 +64,7 @@ at	[@]
 	BEGIN(0);
 }
 <TILDA>{close} {
-	macro_close();
+	macro_end();
 	BEGIN(0);
 }
 <TILDA>{tilda} {
@@ -141,16 +140,6 @@ template_delim(void)
 	case DEFINE:
 	default:
 		yy_fatal_error("~@ outside macro template!!!");
-	}
-}
-
-static void
-macro_close(void)
-{
-	if (!ispushed()) {
-		yy_fatal_error("macro close without macro start!!!");
-	} else {
-		macro_end();
 	}
 }
 
