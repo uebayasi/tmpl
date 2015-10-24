@@ -10,21 +10,29 @@
 	int d = top - fp; \
 	while (d-- > 0) fputc('\t', stderr); \
 } while (0)
+
 #define	DBG(...)	do { \
 	DBGINDENT(); \
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
+
 #define	VC(c)		((vc(c) == 0) ? '?' : vc(c))
+
 #define	DBGCHAR(l, c, n)	do { \
-	if ((c) < 0x20) \
-		fprintf(stderr, "%c%c%c%c%s", (l), '\\', VC(c), (l) + 2, (n)); \
-	else \
-		fprintf(stderr, "%c%c%c%c%s", (l), ' ', (c), (l) + 2, (n)); \
+	char xa, xb; \
+	if ((c) < 0x20) { \
+		xa = '\\'; xb = VC(c); \
+	} else { \
+		xa = ' '; xb = (c); \
+	} \
+	fprintf(stderr, "%c%c%c%c%s", (l), xa, xb, (l) + 2, (n)); \
 } while (0)
+
 #define	DUMPCHAR(l, c)	do { \
 	DBGINDENT(); \
 	DBGCHAR(l, c, "\n"); \
 } while (0)
+
 #define	DUMPBUF()	do { \
 	char *str; \
 	fprintf(stderr, "===|"); \
