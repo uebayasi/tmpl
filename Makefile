@@ -15,10 +15,12 @@ tmpl_exe_OBJS= \
 ./tmpl/macro.o \
 ./tmpl/ss.o \
 ./tmpl/sym.o \
-./symtab/symtab.o \
 
-./tmpl/tmpl.exe: ${tmpl_exe_OBJS}
-	${CC} -o ./tmpl/tmpl.exe ${tmpl_exe_OBJS} -ll
+./tmpl/tmpl.exe: ${tmpl_exe_OBJS} ./symtab/symtab.o
+	${CC} -o ./tmpl/tmpl.exe ${tmpl_exe_OBJS} ./symtab/symtab.o -ll
+
+./tmpl/tmpl.c: ./tmpl/tmpl.l
+	flex -o./tmpl/tmpl.c ./tmpl/tmpl.l
 
 test:
 	@cd ./tests && ./test.sh test0.tmpl
@@ -49,9 +51,9 @@ symtab_o_OBJS= \
 clean:
 	rm -f ./tmpl/tmpl.c */*.o */*.exe ./tests/*.out ./tests/*.err
 
-# suffix rules
+# rules
 
-.SUFFIXES: .c .o
-	${CC} -o $@ -c $<
-.SUFFIXES: .l .c
-	flex -o$@ $<
+.for o in ${tmpl_exe_OBJS} ${symtab_o_OBJS}
+${o}: ${o:R}.c
+	${CC} -o ${o} -c ${o:R}.c
+.endfor
