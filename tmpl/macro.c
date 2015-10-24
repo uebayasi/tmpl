@@ -99,6 +99,16 @@ static void
 dup(const char *s)
 {
 	ss_dup(&fp->buf, s);
+	push(0);
+}
+
+static void
+undup(void)
+{
+	const char *s;
+
+	(void)pop(&s);
+	savestr(s);
 }
 
 void
@@ -185,9 +195,7 @@ template(void)
 	(void)pop(&val);
 	(void)pop(&var);
 	dup(pat);
-	push(0);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
-
 	state = (*ops.suspend)();
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
@@ -196,6 +204,5 @@ template(void)
 	}
 	delsym(var);
 	(*ops.resume)(state);
-	(void)pop(&pat);
-	savestr(pat);
+	undup();
 }
