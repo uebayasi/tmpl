@@ -54,7 +54,7 @@ ss_push(struct strbuf *b)
 }
 
 void
-ss_dup(struct strbuf *b, const char *s)
+ss_keep(struct strbuf *b, const char *s)
 {
 	while (*s++ != '\0')
 		continue;

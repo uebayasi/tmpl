@@ -25,6 +25,6 @@ void ss_alloc(const char *, const char *);
 const char *ss_pop(struct strbuf *);
 int ss_put(struct strbuf *b, char c);
 void ss_push(struct strbuf *b);
-void ss_dup(struct strbuf *b, const char *s);
+void ss_keep(struct strbuf *b, const char *s);
 
 #endif /* _SS_H_ */
