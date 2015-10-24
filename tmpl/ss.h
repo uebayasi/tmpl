@@ -17,14 +17,10 @@
 #ifndef _SS_H_
 #define _SS_H_
 
-struct ss {
-	char *s;
-};
-
 void ss_alloc(const char *, const char *);
-const char *ss_pop(struct ss *);
+const char *ss_pop(char **);
 int ss_put(char);
-void ss_push(struct ss *);
-void ss_keep(struct ss *, const char *s);
+void ss_push(char **);
+void ss_keep(char **, const char *s);
 
 #endif /* _SS_H_ */
