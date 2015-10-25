@@ -30,7 +30,6 @@ struct frame *fp, *top, *bot;
 struct macro_scan_ops *scan;
 
 static const char *pop(void);
-static void savestr(const char *);
 
 void
 initmacro(struct macro_scan_ops *o)
@@ -54,8 +53,8 @@ finimacro(void)
 
 	save('\0');
 	s = pop();
-	savestr(s);
-	ss_flush(savestr);
+	(*scan->write)(s);
+	ss_flush(scan->write);
 }
 
 void
@@ -89,12 +88,8 @@ pop(void)
 void
 save(char c)
 {
-	if (fp == top)
-		(*scan->one)(c);
-	else {
-		if (ss_put(c))
-			ERR("cannot push char!!!\n");
-	}
+	if (ss_put(c))
+		ERR("cannot push char!!!\n");
 	DUMPCHAR((fp == top) ? '{' : '[', c);
 }
 
@@ -200,7 +195,7 @@ template(void)
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s':='%s')\n", var, val);
-		(*scan->proc)(pat);
+		(*scan->read)(pat);
 	}
 	delsym(var);
 	(*scan->resume)(state);

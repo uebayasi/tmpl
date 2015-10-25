@@ -80,8 +80,8 @@ at	[@]
 
 #include "macro.h"
 
-static void macro_one(char);
-static void macro_proc(const char *);
+static void macro_write(const char *);
+static void macro_read(const char *);
 static void *macro_suspend(void);
 static void macro_resume(void *);
 
@@ -89,8 +89,8 @@ int
 main(int argc, char *argv[])
 {
 	static struct macro_scan_ops ops = {
-		.one = &macro_one,
-		.proc = &macro_proc,
+		.write = &macro_write,
+		.read = &macro_read,
 		.suspend = &macro_suspend,
 		.resume = &macro_resume,
 	};
@@ -168,13 +168,13 @@ macro_end(void)
 }
 
 static void
-macro_one(char c)
+macro_write(const char *string)
 {
-	fputc(c, stdout);
+	fputs(string, stdout);
 }
 
 static void
-macro_proc(const char *string)
+macro_read(const char *string)
 {
 	BEGIN(0);
 	yy_scan_string(string);

@@ -25,8 +25,8 @@ struct frame {
 };
 
 struct macro_scan_ops {
-	void (*one)(char);
-	void (*proc)(const char *);
+	void (*write)(const char *);
+	void (*read)(const char *);
 	void *(*suspend)(void);
 	void (*resume)(void *);
 };
