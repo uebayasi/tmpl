@@ -56,22 +56,18 @@ push(int op)
 }
 
 static const char *
-pop(int *rop)
+pop(void)
 {
 	const char *sym;
-	int op;
 
 	if (fp->sym != NULL)
 		sym = fp->sym;
 	else
 		sym = ss_pop();
-	op = fp->op;
 	if (fp == top)
 		ERR("cannot pop stack!!!\n");
 	fp++;
-	DBG("+%d\n", op);
-	if (rop != NULL)
-		*rop = op;
+	DBG("+%d\n", (fp - 1)->op);
 	return sym;
 }
 
@@ -126,7 +122,7 @@ unkeep(char *k)
 {
 	char *s;
 
-	s = pop(NULL);
+	s = pop();
 	savestr(s);
 	ss_unkeep(k);
 }
@@ -139,10 +135,11 @@ define(int end)
 
 	while (op != end) {
 		if (var == NULL)
-			val = pop(NULL);
+			val = pop();
 		else
 			val = var;
-		var = pop(&op);
+		op = fp->op;
+		var = pop();
 		setsym(newsym(var), newsym(val));
 		DBG("('%s'<='%s')\n", var, val);
 	}
@@ -161,7 +158,7 @@ expand(void)
 {
 	const char *var, *val;
 
-	var = pop(NULL);
+	var = pop();
 	var = newsym(var);
 	val = getsym(var);
 	if (val == NULL) {
@@ -179,9 +176,9 @@ template(void)
 	const char *var, *val, *pat, *k;
 	void *state;
 
-	pat = pop(NULL);
-	val = pop(NULL);
-	var = pop(NULL);
+	pat = pop();
+	val = pop();
+	var = pop();
 	k = keep(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	state = (*scan.suspend)();
