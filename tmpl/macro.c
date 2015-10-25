@@ -29,14 +29,6 @@
 struct frame *fp, *top, *bot;
 struct macro_scan_ops scan;
 
-#ifdef DEBUG
-const char cs[20] = {
-	[0] = '0',
-	[10] = 'n',
-};
-#define	vc(c)	(cs[(int)c])
-#endif
-
 void
 initmacro(struct macro_scan_ops *o)
 {
@@ -117,20 +109,24 @@ new(void)
 	fp->sym = newsym(ss_pop());
 }
 
-static void
-keep(const char *s)
+static char *
+keep(char *s)
 {
-	ss_keep(s);
+	char *k;
+
+	k = ss_keep(s);
 	push(0);
+	return k;
 }
 
 static void
-unkeep(void)
+unkeep(char *k)
 {
-	const char *s;
+	char *s;
 
 	(void)pop(&s);
 	savestr(s);
+	ss_unkeep(k);
 }
 
 void
@@ -178,13 +174,15 @@ expand(void)
 void
 template(void)
 {
-	const char *var, *val, *pat;
+	const char *var, *val, *pat, *k;
 	void *state;
 
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	keep(pat);
+	ss_dump();
+	k = keep(pat);
+	ss_dump();
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	state = (*scan.suspend)();
 	while ((val = getsym(val)) != NULL) {
@@ -194,5 +192,8 @@ template(void)
 	}
 	delsym(var);
 	(*scan.resume)(state);
-	unkeep();
+	ss_dump();
+	unkeep(k);
+	ss_dump();
+	DBG("========\n");
 }

@@ -23,6 +23,8 @@
 
 #else /* !DEBUG */
 
+#include <stdio.h>
+
 #define	DBGINDENT()	do { \
 	int d = top - fp; \
 	while (d-- > 0) fputc('\t', stderr); \
@@ -33,7 +35,7 @@
 	fprintf(stderr, __VA_ARGS__); \
 } while (0)
 
-#define	VC(c)		((vc(c) == 0) ? '?' : vc(c))
+#define	VC(c)		((c) == 0 ? '0' : (c) == 10 ? 'n' : '?')
 
 #define	DBGCHAR(l, c, n)	do { \
 	char xa, xb; \
@@ -51,9 +53,10 @@
 } while (0)
 
 #define	DUMPBUF()	do { \
+	extern char *head, *cur; \
 	char *str; \
 	fprintf(stderr, "===|"); \
-	for (str = sb->head; str != sb->tail; str++) { \
+	for (str = head; str != cur; str++) { \
 		char c = *str; \
 		DBGCHAR('[', c, ""); \
 	} \

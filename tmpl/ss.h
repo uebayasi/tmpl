@@ -21,6 +21,12 @@ void ss_alloc(char *, char *, char **, char **);
 char *ss_pop(void);
 int ss_put(char);
 void ss_push(void);
-void ss_keep(const char *s);
+char *ss_keep(char *);
+void ss_unkeep(char *);
+#ifdef DEBUG
+void ss_dump(void);
+#else
+#define	ss_dump()	do {} while (0)
+#endif
 
 #endif /* _SS_H_ */

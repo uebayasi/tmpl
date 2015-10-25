@@ -15,6 +15,7 @@
  */
 
 #include "ss.h"
+#include "dbg.h"
 
 static char *head, *tail, *cur;
 static char **sss, **sse, **ss;
@@ -52,11 +53,28 @@ ss_pop(void)
 	return cur;
 }
 
-void
-ss_keep(const char *s)
+char *
+ss_keep(char *s)
 {
+	char *k = cur;
+
 	while (*s++ != '\0')
 		continue;
 	cur = s;
 	ss_push();
+	return k;
 }
+
+void
+ss_unkeep(char *k)
+{
+	cur = k;
+}
+
+#ifdef DEBUG
+void
+ss_dump(void)
+{
+	DUMPBUF();
+}
+#endif
