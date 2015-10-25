@@ -70,6 +70,13 @@ ss_unkeep(char *k)
 	cur = k;
 }
 
+void
+ss_flush(void (*f)(const char *))
+{
+	if (head != cur)
+		(*f)(head);
+}
+
 #ifdef DEBUG
 void
 ss_dump(void)

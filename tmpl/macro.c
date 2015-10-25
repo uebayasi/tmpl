@@ -29,6 +29,9 @@
 struct frame *fp, *top, *bot;
 struct macro_scan_ops *scan;
 
+static const char *pop(void);
+static void savestr(const char *);
+
 void
 initmacro(struct macro_scan_ops *o)
 {
@@ -41,6 +44,18 @@ initmacro(struct macro_scan_ops *o)
 	bot = &frames[0];
 	fp = top = bot + MACRO_DEPTH - 1;
 	scan = o;
+	push(0);
+}
+
+void
+finimacro(void)
+{
+	char *s;
+
+	save('\0');
+	s = pop();
+	savestr(s);
+	ss_flush(savestr);
 }
 
 void

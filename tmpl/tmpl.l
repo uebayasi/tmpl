@@ -96,6 +96,7 @@ main(int argc, char *argv[])
 	};
 	initmacro(&ops);
 	yylex();
+	finimacro();
 	return 0;
 }
 
