@@ -56,10 +56,9 @@ ss_pop(void)
 char *
 ss_keep(char *s)
 {
-	char *k = cur;
+	char *k;
 
-	while (*s++ != '\0')
-		continue;
+	k = cur;
 	cur = s;
 	ss_push();
 	return k;

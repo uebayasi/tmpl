@@ -63,9 +63,8 @@ pop(const char **rsym)
 
 	if (fp->sym != NULL)
 		sym = fp->sym;
-	else {
+	else
 		sym = ss_pop();
-	}
 	op = fp->op;
 	if (fp == top)
 		ERR("cannot pop stack!!!\n");
@@ -114,6 +113,8 @@ keep(char *s)
 {
 	char *k;
 
+	while (*s++ != '\0')
+		continue;
 	k = ss_keep(s);
 	push(0);
 	return k;
