@@ -88,7 +88,7 @@ static void macro_resume(void *);
 int
 main(int argc, char *argv[])
 {
-	struct macro_scan_ops ops = {
+	static struct macro_scan_ops ops = {
 		.one = &macro_one,
 		.proc = &macro_proc,
 		.suspend = &macro_suspend,

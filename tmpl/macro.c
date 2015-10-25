@@ -27,7 +27,7 @@
 } while (0)
 
 struct frame *fp, *top, *bot;
-struct macro_scan_ops scan;
+struct macro_scan_ops *scan;
 
 void
 initmacro(struct macro_scan_ops *o)
@@ -40,7 +40,7 @@ initmacro(struct macro_scan_ops *o)
 	ss_alloc(chars, chars + STRBUF_MAX - 1, strs, strs + MACRO_DEPTH - 1);
 	bot = &frames[0];
 	fp = top = bot + MACRO_DEPTH - 1;
-	scan = *o;
+	scan = o;
 }
 
 void
@@ -75,7 +75,7 @@ void
 save(char c)
 {
 	if (fp == top)
-		(*scan.one)(c);
+		(*scan->one)(c);
 	else {
 		if (ss_put(c))
 			ERR("cannot push char!!!\n");
@@ -181,13 +181,13 @@ template(void)
 	var = pop();
 	k = keep(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
-	state = (*scan.suspend)();
+	state = (*scan->suspend)();
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
 		DBG("('%s':='%s')\n", var, val);
-		(*scan.proc)(pat);
+		(*scan->proc)(pat);
 	}
 	delsym(var);
-	(*scan.resume)(state);
+	(*scan->resume)(state);
 	unkeep(k);
 }
