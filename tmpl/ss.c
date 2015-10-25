@@ -25,8 +25,8 @@ ss_alloc(char *p, char *q, char **xsss, char **xsse)
 {
 	head = cur = p;
 	tail = q;
-	sss = ss = xsss;
-	sse = xsse;
+	sss = xsss;
+	sse = ss = xsse;
 }
 
 int
@@ -43,13 +43,13 @@ ss_put(char c)
 void
 ss_push(void)
 {
-	*ss++ = cur;
+	*--ss = cur;
 }
 
 char *
 ss_pop(void)
 {
-	cur = *--ss;
+	cur = *ss++;
 	return cur;
 }
 
@@ -73,14 +73,23 @@ ss_unkeep(char *k)
 void
 ss_flush(void (*f)(const char *))
 {
-	if (head != cur)
-		(*f)(head);
+#ifdef DEBUG
+	fprintf(stderr, "!!!!!!!!\n");
+#endif
+	if (ss != sse) {
+		char *s = ss_pop();
+		(*f)(s);
+	}
 }
 
 #ifdef DEBUG
 void
 ss_dump(void)
 {
-	DUMPBUF();
+	char **xss;
+
+	DUMPBUF(head, cur);
+	for (xss = ss; xss < sse; xss++)
+		fprintf(stderr, "||||%s||||\n", *xss);
 }
 #endif

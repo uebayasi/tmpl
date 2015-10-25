@@ -52,11 +52,10 @@
 	DBGCHAR(l, c, "\n"); \
 } while (0)
 
-#define	DUMPBUF()	do { \
-	extern char *head, *cur; \
+#define	DUMPBUF(p, q)	do { \
 	char *str; \
 	fprintf(stderr, "===|"); \
-	for (str = head; str != cur; str++) { \
+	for (str = (p); str != (q); str++) { \
 		char c = *str; \
 		DBGCHAR('[', c, ""); \
 	} \
