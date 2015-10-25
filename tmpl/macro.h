@@ -33,7 +33,6 @@ struct macro_scan_ops {
 
 void initmacro(struct macro_scan_ops *);
 void push(int);
-int pop(const char **);
 void save(char c);
 int delim(void);
 void new(void);
