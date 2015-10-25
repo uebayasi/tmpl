@@ -58,7 +58,7 @@ push(int op)
 		ERR("stack too deep!!!\n");
 	DBG("-%d\n", op);
 	fp--;
-	ss_push(&fp->buf);
+	ss_push();
 	fp->sym = NULL;
 	fp->op = op;
 }
@@ -72,7 +72,7 @@ pop(const char **rsym)
 	if (fp->sym != NULL)
 		sym = fp->sym;
 	else {
-		sym = ss_pop(&fp->buf);
+		sym = ss_pop();
 	}
 	op = fp->op;
 	if (fp == top)
@@ -114,13 +114,13 @@ delim(void)
 void
 new(void)
 {
-	fp->sym = newsym(ss_pop(&fp->buf));
+	fp->sym = newsym(ss_pop());
 }
 
 static void
 keep(const char *s)
 {
-	ss_keep(&fp->buf, s);
+	ss_keep(s);
 	push(0);
 }
 

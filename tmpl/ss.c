@@ -40,23 +40,23 @@ ss_put(char c)
 }
 
 void
-ss_push(char **rs)
+ss_push(void)
 {
 	*ss++ = cur;
 }
 
 char *
-ss_pop(char **rs)
+ss_pop(void)
 {
 	cur = *--ss;
-	return *ss;
+	return cur;
 }
 
 void
-ss_keep(char **rs, const char *s)
+ss_keep(const char *s)
 {
 	while (*s++ != '\0')
 		continue;
 	cur = s;
-	ss_push(rs);
+	ss_push();
 }

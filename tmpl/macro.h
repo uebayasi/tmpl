@@ -20,7 +20,6 @@
 #include "macro_config.h"
 
 struct frame {
-	char *buf;
 	const char *sym;
 	int op;
 };
