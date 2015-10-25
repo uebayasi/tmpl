@@ -180,9 +180,7 @@ template(void)
 	(void)pop(&pat);
 	(void)pop(&val);
 	(void)pop(&var);
-	ss_dump();
 	k = keep(pat);
-	ss_dump();
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	state = (*scan.suspend)();
 	while ((val = getsym(val)) != NULL) {
@@ -192,8 +190,5 @@ template(void)
 	}
 	delsym(var);
 	(*scan.resume)(state);
-	ss_dump();
 	unkeep(k);
-	ss_dump();
-	DBG("========\n");
 }
