@@ -17,12 +17,15 @@
 #include "ss.h"
 
 static char *head, *tail, *cur;
+static char **sss, **sse, **ss;
 
 void
-ss_alloc(const char *p, const char *q)
+ss_alloc(char *p, char *q, char **xsss, char **xsse)
 {
 	head = cur = p;
 	tail = q;
+	sss = ss = xsss;
+	sse = xsse;
 }
 
 int
@@ -39,13 +42,14 @@ ss_put(char c)
 void
 ss_push(char **rs)
 {
-	*rs = cur;
+	*ss++ = cur;
 }
 
-void
+char *
 ss_pop(char **rs)
 {
-	cur = *rs;
+	cur = *--ss;
+	return *ss;
 }
 
 void

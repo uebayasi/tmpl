@@ -41,10 +41,11 @@ void
 initmacro(struct macro_scan_ops *o)
 {
 	static char chars[STRBUF_MAX];
+	static char *strs[MACRO_DEPTH];
 	static struct frame frames[MACRO_DEPTH];
 
 	initsym();
-	ss_alloc(chars, chars + STRBUF_MAX - 1);
+	ss_alloc(chars, chars + STRBUF_MAX - 1, strs, strs + MACRO_DEPTH - 1);
 	bot = &frames[0];
 	fp = top = bot + MACRO_DEPTH - 1;
 	scan = *o;
@@ -71,8 +72,7 @@ pop(const char **rsym)
 	if (fp->sym != NULL)
 		sym = fp->sym;
 	else {
-		ss_pop(&fp->buf);
-		sym = fp->buf;
+		sym = ss_pop(&fp->buf);
 	}
 	op = fp->op;
 	if (fp == top)
@@ -114,8 +114,7 @@ delim(void)
 void
 new(void)
 {
-	ss_pop(&fp->buf);
-	fp->sym = newsym(fp->buf);
+	fp->sym = newsym(ss_pop(&fp->buf));
 }
 
 static void
