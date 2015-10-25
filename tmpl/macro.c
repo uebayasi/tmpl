@@ -98,7 +98,6 @@ savestr(const char *s)
 {
 	int c;
 
-	ss_dump();
 	while ((c = *s++) != '\0')
 		save(c);
 }

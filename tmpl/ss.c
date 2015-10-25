@@ -73,9 +73,6 @@ ss_unkeep(char *k)
 void
 ss_flush(void (*f)(const char *))
 {
-#ifdef DEBUG
-	fprintf(stderr, "!!!!!!!!\n");
-#endif
 	if (ss != sse) {
 		char *s = ss_pop();
 		(*f)(s);
@@ -89,7 +86,5 @@ ss_dump(void)
 	char **xss;
 
 	DUMPBUF(head, cur);
-	for (xss = ss; xss < sse; xss++)
-		fprintf(stderr, "||||%s||||\n", *xss);
 }
 #endif
