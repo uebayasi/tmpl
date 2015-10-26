@@ -29,8 +29,6 @@
 struct frame *fp, *top, *bot;
 struct macro_scan_ops *scan;
 
-static const char *pop(void);
-
 void
 initmacro(struct macro_scan_ops *o)
 {
@@ -115,8 +113,6 @@ new(void)
 static void
 keep(char *s)
 {
-	char *k;
-
 	ss_keep(s);
 	while (*s++ != '\0')
 		continue;
@@ -127,14 +123,12 @@ keep(char *s)
 static void
 unkeep(void)
 {
-	char *s, *k, c;
+	char *s;
 
 	fp++;
 	s = ss_pop();
-	k = ss_pop();
-	ss_unkeep(k);
-	while ((c = *s++) != '\0')
-		save(c);
+	ss_unkeep(ss_pop());
+	savestr(s);
 }
 
 void
