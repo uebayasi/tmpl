@@ -81,9 +81,9 @@ pop(void)
 void
 save(char c)
 {
-	if (fp == top) {
+	if (fp == top)
 		(*scan->write)(c);
-	} else {
+	else {
 		if (ss_put(c))
 			ERR("cannot push char!!!\n");
 	}
