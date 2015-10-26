@@ -80,19 +80,19 @@ at	[@]
 
 #include "macro.h"
 
-static void macro_write(char);
-static void macro_read(const char *);
-static void *macro_suspend(void);
-static void macro_resume(void *);
+static void scan_write(char);
+static void scan_read(const char *);
+static void *scan_suspend(void);
+static void scan_resume(void *);
 
 int
 main(int argc, char *argv[])
 {
 	static struct macro_scan_ops ops = {
-		.write = &macro_write,
-		.read = &macro_read,
-		.suspend = &macro_suspend,
-		.resume = &macro_resume,
+		.write = &scan_write,
+		.read = &scan_read,
+		.suspend = &scan_suspend,
+		.resume = &scan_resume,
 	};
 	initmacro(&ops);
 	yylex();
@@ -168,13 +168,13 @@ macro_end(void)
 }
 
 static void
-macro_write(char c)
+scan_write(char c)
 {
 	fputc(c, stdout);
 }
 
 static void
-macro_read(const char *string)
+scan_read(const char *string)
 {
 	BEGIN(0);
 	yy_scan_string(string);
@@ -182,13 +182,13 @@ macro_read(const char *string)
 }
 
 static void *
-macro_suspend(void)
+scan_suspend(void)
 {
 	return YY_CURRENT_BUFFER;
 }
 
 static void
-macro_resume(void *state)
+scan_resume(void *state)
 {
 	yy_switch_to_buffer(state);
 }
