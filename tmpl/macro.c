@@ -53,7 +53,6 @@ push(int op)
 {
 	if (fp == bot)
 		ERR("stack too deep!!!\n");
-	DBG("-%d\n", op);
 	fp--;
 	ss_push();
 	fp->sym = NULL;
@@ -72,7 +71,6 @@ pop(void)
 	if (fp == top)
 		ERR("cannot pop stack!!!\n");
 	fp++;
-	DBG("+%d\n", (fp - 1)->op);
 	return sym;
 }
 
@@ -81,10 +79,8 @@ save(char c)
 {
 	if (fp == top)
 		(*scan->write)(c);
-	else {
-		if (ss_put(c))
-			ERR("cannot push char!!!\n");
-	}
+	else if (ss_put(c))
+		ERR("cannot push char!!!\n");
 	DUMPCHAR((fp == top) ? '{' : '[', c);
 }
 
@@ -145,7 +141,6 @@ define(int end)
 		op = fp->op;
 		var = pop();
 		setsym(newsym(var), newsym(val));
-		DBG("('%s'<='%s')\n", var, val);
 	}
 }
 
@@ -165,13 +160,10 @@ expand(void)
 	var = pop();
 	var = newsym(var);
 	val = getsym(var);
-	if (val == NULL) {
-		DBG("('%s'=='%s')\n", var, var);
+	if (val == NULL)
 		unexpand(var);
-	} else {
-		DBG("('%s'=>'%s')\n", var, val);
+	else
 		savestr(val);
-	}
 }
 
 void
@@ -184,15 +176,13 @@ template(void)
 	val = pop();
 	var = pop();
 	keep(pat);
-	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	state = (*scan->suspend)();
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
-		DBG("('%s':='%s')\n", var, val);
 		(*scan->read)(pat);
 	}
-	save('\0');
 	delsym(var);
 	(*scan->resume)(state);
+	save('\0');
 	unkeep();
 }

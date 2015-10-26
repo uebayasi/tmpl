@@ -71,12 +71,11 @@ ss_unkeep(char *s)
 void
 ss_dump(void)
 {
-	char **xss;
+	char **x;
 
 	DUMPBUF(head, cur);
-	for (xss = sse; ss < xss; xss--) {
+	for (x = sse; ss < x; x--)
 		fputc('$', stderr);
-	}
 	fputc('\n', stderr);
 }
 #endif
