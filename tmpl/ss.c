@@ -40,20 +40,29 @@ ss_put(char c)
 	}
 }
 
-void
+int
 ss_push(void)
 {
-	*--ss = cur;
+	if (ss == sss)
+		return 1;
+	else {
+		*--ss = cur;
+		return 0;
+	}
 }
 
 char *
 ss_pop(void)
 {
-	cur = *ss++;
-	return cur;
+	if (ss == sse)
+		return (void *)-1;
+	else {
+		cur = *ss++;
+		return cur;
+	}
 }
 
-void
+int
 ss_keep(char *s)
 {
 	cur = s;
@@ -62,6 +71,7 @@ ss_keep(char *s)
 		continue;
 	cur = s;
 	ss_push();
+	return 0;
 }
 
 char *

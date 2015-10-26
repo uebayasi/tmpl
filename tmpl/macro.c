@@ -52,7 +52,8 @@ push(int op)
 	if (f == bot)
 		(*scan->error)("stack too deep!!!\n");
 	f--;
-	ss_push();
+	if (ss_push())
+		(*scan->error)("cannot push string!!!\n");
 	f->sym = NULL;
 	f->op = op;
 }
@@ -64,8 +65,11 @@ pop(void)
 
 	if (f->sym != NULL)
 		sym = f->sym;
-	else
+	else {
 		sym = ss_pop();
+		if (sym == (void *)-1)
+			(*scan->error)("cannot pop string!!!\n");
+	}
 	if (f == top)
 		(*scan->error)("cannot pop stack!!!\n");
 	f++;
@@ -101,13 +105,19 @@ delim(void)
 void
 new(void)
 {
-	f->sym = newsym(ss_pop());
+	char *s;
+
+	s = ss_pop();
+	if (s == (void *)-1)
+		(*scan->error)("cannot pop string!!!\n");
+	f->sym = newsym(s);
 }
 
 static void
 keep(char *s)
 {
-	ss_keep(s);
+	if (ss_keep(s))
+		(*scan->error)("cannot push char!!!\n");
 	f--;
 }
 
