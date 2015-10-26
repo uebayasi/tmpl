@@ -39,7 +39,7 @@ initmacro(struct macro_scan_ops *o)
 	initsym();
 	ss_alloc(chars, chars + STRBUF_MAX, strs, strs + MACRO_DEPTH);
 	bot = &frames[0];
-	fp = top = bot + MACRO_DEPTH - 1;
+	fp = top = bot + MACRO_DEPTH;
 	scan = o;
 }
 
