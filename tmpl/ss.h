@@ -22,7 +22,7 @@ char *ss_pop(void);
 int ss_put(char);
 void ss_push(void);
 void ss_keep(char *);
-void ss_unkeep(char *);
+char *ss_unkeep(void);
 #ifdef DEBUG
 void ss_dump(void);
 #else

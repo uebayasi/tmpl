@@ -108,21 +108,14 @@ static void
 keep(char *s)
 {
 	ss_keep(s);
-	while (*s++ != '\0')
-		continue;
-	ss_keep(s);
 	f--;
 }
 
 static void
 unkeep(void)
 {
-	char *s;
-
 	f++;
-	s = ss_pop();
-	ss_unkeep(ss_pop());
-	savestr(s);
+	savestr(ss_unkeep());
 }
 
 void

@@ -58,12 +58,20 @@ ss_keep(char *s)
 {
 	cur = s;
 	ss_push();
+	while (*s++ != '\0')
+		continue;
+	cur = s;
+	ss_push();
 }
 
-void
-ss_unkeep(char *s)
+char *
+ss_unkeep(void)
 {
-	cur = s;
+	char *s;
+
+	s = ss_pop();
+	(void)ss_pop();
+	return s;
 }
 
 #ifdef DEBUG
