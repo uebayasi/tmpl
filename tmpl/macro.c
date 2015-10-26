@@ -82,8 +82,7 @@ void
 save(char c)
 {
 	if (fp == top) {
-		if (c != '\0')
-			(*scan->write)(c);
+		(*scan->write)(c);
 	} else {
 		if (ss_put(c))
 			ERR("cannot push char!!!\n");
