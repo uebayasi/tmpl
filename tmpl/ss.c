@@ -27,7 +27,6 @@ ss_alloc(char *p, char *q, char **s, char **e)
 	tail = q;
 	sss = s;
 	sse = ss = e;
-	ss_push();
 }
 
 int
