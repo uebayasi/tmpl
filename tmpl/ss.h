@@ -23,10 +23,5 @@ int ss_put(char);
 int ss_push(void);
 int ss_keep(char *);
 char *ss_unkeep(void);
-#ifdef DEBUG
-void ss_dump(void);
-#else
-#define	ss_dump()	do {} while (0)
-#endif
 
 #endif /* _SS_H_ */
