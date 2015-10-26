@@ -14,17 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stddef.h>
 #include "macro.h"
 #include "ss.h"
 #include "sym.h"
 #include "dbg.h"
-
-#define ERR(...) do { \
-	fprintf(stderr, __VA_ARGS__); \
-	exit(1); \
-} while (0)
 
 struct frame *f, *top, *bot;
 struct macro_scan_ops *scan;
@@ -52,7 +46,7 @@ void
 push(int op)
 {
 	if (f == bot)
-		ERR("stack too deep!!!\n");
+		(*scan->error)("stack too deep!!!\n");
 	f--;
 	ss_push();
 	f->sym = NULL;
@@ -69,7 +63,7 @@ pop(void)
 	else
 		sym = ss_pop();
 	if (f == top)
-		ERR("cannot pop stack!!!\n");
+		(*scan->error)("cannot pop stack!!!\n");
 	f++;
 	return sym;
 }
@@ -80,7 +74,7 @@ save(char c)
 	if (f == top)
 		(*scan->write)(c);
 	else if (ss_put(c))
-		ERR("cannot push char!!!\n");
+		(*scan->error)("cannot push char!!!\n");
 	DUMPCHAR((f == top) ? '{' : '[', c);
 }
 

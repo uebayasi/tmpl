@@ -29,6 +29,7 @@ struct macro_scan_ops {
 	void (*read)(const char *);
 	void *(*suspend)(void);
 	void (*resume)(void *);
+	void (*error)(const char *, ...) __attribute__((__noreturn__));
 };
 
 void initmacro(struct macro_scan_ops *);

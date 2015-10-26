@@ -15,7 +15,9 @@
  */
 
 %{
+#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 static void just(void);
 static void macro_start(void);
@@ -84,6 +86,7 @@ static void scan_write(char);
 static void scan_read(const char *);
 static void *scan_suspend(void);
 static void scan_resume(void *);
+static void scan_error(const char *, ...);
 
 int
 main(int argc, char *argv[])
@@ -93,6 +96,7 @@ main(int argc, char *argv[])
 		.read = &scan_read,
 		.suspend = &scan_suspend,
 		.resume = &scan_resume,
+		.error = &scan_error,
 	};
 	initmacro(&ops);
 	yylex();
@@ -191,4 +195,15 @@ static void
 scan_resume(void *state)
 {
 	yy_switch_to_buffer(state);
+}
+
+static void
+scan_error(const char *msg, ...)
+{
+	va_list ap;
+
+	va_start(ap, msg);
+	vfprintf(stderr, msg, ap);
+	va_end(ap);
+	exit(1);
 }
