@@ -26,7 +26,7 @@
 	exit(1); \
 } while (0)
 
-struct frame *fp, *top, *bot;
+struct frame *f, *top, *bot;
 struct macro_scan_ops *scan;
 
 void
@@ -39,7 +39,7 @@ initmacro(struct macro_scan_ops *o)
 	initsym();
 	ss_alloc(chars, chars + STRBUF_MAX, strs, strs + MACRO_DEPTH);
 	bot = &frames[0];
-	fp = top = bot + MACRO_DEPTH;
+	f = top = bot + MACRO_DEPTH;
 	scan = o;
 }
 
@@ -51,12 +51,12 @@ finimacro(void)
 void
 push(int op)
 {
-	if (fp == bot)
+	if (f == bot)
 		ERR("stack too deep!!!\n");
-	fp--;
+	f--;
 	ss_push();
-	fp->sym = NULL;
-	fp->op = op;
+	f->sym = NULL;
+	f->op = op;
 }
 
 static const char *
@@ -64,24 +64,24 @@ pop(void)
 {
 	const char *sym;
 
-	if (fp->sym != NULL)
-		sym = fp->sym;
+	if (f->sym != NULL)
+		sym = f->sym;
 	else
 		sym = ss_pop();
-	if (fp == top)
+	if (f == top)
 		ERR("cannot pop stack!!!\n");
-	fp++;
+	f++;
 	return sym;
 }
 
 void
 save(char c)
 {
-	if (fp == top)
+	if (f == top)
 		(*scan->write)(c);
 	else if (ss_put(c))
 		ERR("cannot push char!!!\n");
-	DUMPCHAR((fp == top) ? '{' : '[', c);
+	DUMPCHAR((f == top) ? '{' : '[', c);
 }
 
 static void
@@ -97,13 +97,13 @@ int
 delim(void)
 {
 	save('\0');
-	return fp->op;
+	return f->op;
 }
 
 void
 new(void)
 {
-	fp->sym = newsym(ss_pop());
+	f->sym = newsym(ss_pop());
 }
 
 static void
@@ -113,7 +113,7 @@ keep(char *s)
 	while (*s++ != '\0')
 		continue;
 	ss_keep(s);
-	fp--;
+	f--;
 }
 
 static void
@@ -121,7 +121,7 @@ unkeep(void)
 {
 	char *s;
 
-	fp++;
+	f++;
 	s = ss_pop();
 	ss_unkeep(ss_pop());
 	savestr(s);
@@ -138,7 +138,7 @@ define(int end)
 			val = pop();
 		else
 			val = var;
-		op = fp->op;
+		op = f->op;
 		var = pop();
 		setsym(newsym(var), newsym(val));
 	}
