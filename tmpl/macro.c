@@ -115,7 +115,7 @@ keep(char *s)
 {
 	char *k;
 
-	(void)ss_keep(s);
+	ss_keep(s);
 	while (*s++ != '\0')
 		continue;
 	ss_keep(s);
@@ -124,12 +124,11 @@ keep(char *s)
 static void
 unkeep(void)
 {
-	char *s, *k;
+	char *s, *k, c;
 
 	save('\0');
 	s = ss_pop();
 	k = ss_pop();
-	char c;
 	while ((c = *s) != '\0')
 		*k++ = *s++;
 	ss_unkeep(k);
