@@ -39,21 +39,16 @@ initmacro(struct macro_scan_ops *o)
 	static struct frame frames[MACRO_DEPTH];
 
 	initsym();
-	ss_alloc(chars, chars + STRBUF_MAX - 1, strs, strs + MACRO_DEPTH - 1);
+	ss_alloc(chars, chars + STRBUF_MAX, strs, strs + MACRO_DEPTH);
 	bot = &frames[0];
 	fp = top = bot + MACRO_DEPTH - 1;
 	scan = o;
-	push(0);
 }
 
 void
 finimacro(void)
 {
-	char *s;
-
 	save('\0');
-	s = pop();
-	(*scan->write)(s);
 	ss_flush(scan->write);
 }
 
@@ -115,25 +110,28 @@ new(void)
 	fp->sym = newsym(ss_pop());
 }
 
-static char *
+static void
 keep(char *s)
 {
 	char *k;
 
+	(void)ss_keep(s);
 	while (*s++ != '\0')
 		continue;
-	k = ss_keep(s);
-	push(0);
-	return k;
+	ss_keep(s);
 }
 
 static void
-unkeep(char *k)
+unkeep(void)
 {
-	char *s;
+	char *s, *k;
 
-	s = pop();
-	savestr(s);
+	save('\0');
+	s = ss_pop();
+	k = ss_pop();
+	char c;
+	while ((c = *s) != '\0')
+		*k++ = *s++;
 	ss_unkeep(k);
 }
 
@@ -183,13 +181,13 @@ expand(void)
 void
 template(void)
 {
-	const char *var, *val, *pat, *k;
+	const char *var, *val, *pat;
 	void *state;
 
 	pat = pop();
 	val = pop();
 	var = pop();
-	k = keep(pat);
+	keep(pat);
 	DBG("('%s'@'%s'@'%s')\n", var, val, pat);
 	state = (*scan->suspend)();
 	while ((val = getsym(val)) != NULL) {
@@ -199,5 +197,5 @@ template(void)
 	}
 	delsym(var);
 	(*scan->resume)(state);
-	unkeep(k);
+	unkeep();
 }

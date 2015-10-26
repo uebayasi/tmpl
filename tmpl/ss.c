@@ -21,12 +21,13 @@ static char *head, *tail, *cur;
 static char **sss, **sse, **ss;
 
 void
-ss_alloc(char *p, char *q, char **xsss, char **xsse)
+ss_alloc(char *p, char *q, char **s, char **e)
 {
 	head = cur = p;
 	tail = q;
-	sss = xsss;
-	sse = ss = xsse;
+	sss = s;
+	sse = ss = e;
+	ss_push();
 }
 
 int
@@ -53,29 +54,29 @@ ss_pop(void)
 	return cur;
 }
 
-char *
+void
 ss_keep(char *s)
 {
-	char *k;
-
-	k = cur;
 	cur = s;
 	ss_push();
-	return k;
 }
 
 void
-ss_unkeep(char *k)
+ss_unkeep(char *s)
 {
-	cur = k;
+	cur = s;
 }
 
 void
 ss_flush(void (*f)(const char *))
 {
-	if (ss != sse) {
+	while (ss != sse) {
 		char *s = ss_pop();
 		(*f)(s);
+	}
+	if (head < cur) {
+		(*f)(head);
+		cur = head;
 	}
 }
 
@@ -86,5 +87,9 @@ ss_dump(void)
 	char **xss;
 
 	DUMPBUF(head, cur);
+	for (xss = sse; ss < xss; xss--) {
+		fputc('$', stderr);
+	}
+	fputc('\n', stderr);
 }
 #endif
