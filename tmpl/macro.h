@@ -24,7 +24,7 @@ struct frame {
 	int op;
 };
 
-struct macro_scan_ops {
+struct macro_ops {
 	void (*write)(char);
 	void (*read)(const char *);
 	void *(*suspend)(void);
@@ -32,7 +32,7 @@ struct macro_scan_ops {
 	void (*error)(const char *, ...) __attribute__((__noreturn__));
 };
 
-void initmacro(struct macro_scan_ops *);
+void initmacro(struct macro_ops *);
 void finimacro(void);
 void push(int);
 void save(char c);

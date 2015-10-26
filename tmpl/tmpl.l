@@ -91,7 +91,7 @@ static void scan_error(const char *, ...);
 int
 main(int argc, char *argv[])
 {
-	static struct macro_scan_ops ops = {
+	static struct macro_ops ops = {
 		.write = &scan_write,
 		.read = &scan_read,
 		.suspend = &scan_suspend,

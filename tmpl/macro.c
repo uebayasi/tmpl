@@ -21,10 +21,10 @@
 #include "dbg.h"
 
 struct frame *f, *top, *bot;
-struct macro_scan_ops *scan;
+struct macro_ops *scan;
 
 void
-initmacro(struct macro_scan_ops *o)
+initmacro(struct macro_ops *o)
 {
 	static char chars[STRBUF_MAX];
 	static char *strs[MACRO_DEPTH];
