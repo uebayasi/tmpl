@@ -3,7 +3,7 @@
 # common
 
 CFLAGS=		-Wall -g -O0
-CPPFLAGS=	-DDEBUG
+#CPPFLAGS=	-DDEBUG
 CC=		cc ${CPPFLAGS} ${CFLAGS}
 
 all: ./tmpl/tmpl.exe test
