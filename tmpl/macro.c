@@ -20,6 +20,10 @@
 #include "sym.h"
 #include "dbg.h"
 
+#ifndef nitems
+#define	nitems(_a)	(sizeof((_a)) / sizeof((_a)[0]))
+#endif
+
 struct frame *f, *top, *bot;
 struct macro_ops *scan;
 
@@ -31,9 +35,9 @@ initmacro(struct macro_ops *o)
 	static struct frame frames[MACRO_DEPTH];
 
 	initsym();
-	ss_alloc(chars, chars + STRBUF_MAX, strs, strs + MACRO_DEPTH);
-	bot = &frames[0];
-	f = top = bot + MACRO_DEPTH;
+	ss_alloc(chars, chars + nitems(chars), strs, strs + nitems(strs));
+	bot = frames;
+	f = top = bot + nitems(frames);
 	scan = o;
 }
 
