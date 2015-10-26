@@ -83,16 +83,3 @@ ss_unkeep(void)
 	(void)ss_pop();
 	return s;
 }
-
-#ifdef DEBUG
-void
-ss_dump(void)
-{
-	char **x;
-
-	DUMPBUF(head, cur);
-	for (x = sse; ss < x; x--)
-		fputc('$', stderr);
-	fputc('\n', stderr);
-}
-#endif

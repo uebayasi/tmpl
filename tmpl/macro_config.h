@@ -19,8 +19,8 @@
 
 enum {
 	MACRO_DEPTH = 32,
-	MACRO_MAX = 32,
-	STRBUF_MAX = 4096,
+	SS_NSTRS = 128,
+	SS_NCHARS = 4096,
 };
 
 #endif /* _MACRO_CONFIG_H_ */

@@ -30,8 +30,8 @@ struct macro_ops *scan;
 void
 initmacro(struct macro_ops *o)
 {
-	static char chars[STRBUF_MAX];
-	static char *strs[MACRO_DEPTH];
+	static char chars[SS_NCHARS];
+	static char *strs[SS_NSTRS];
 	static struct frame frames[MACRO_DEPTH];
 
 	initsym();
@@ -107,8 +107,7 @@ new(void)
 {
 	char *s;
 
-	s = ss_pop();
-	if (s == (void *)-1)
+	if ((s = ss_pop()) == (void *)-1)
 		(*scan->error)("cannot pop string!!!\n");
 	f->sym = newsym(s);
 }
