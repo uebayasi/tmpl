@@ -126,7 +126,6 @@ unkeep(void)
 {
 	char *s, *k, c;
 
-	save('\0');
 	s = ss_pop();
 	k = ss_pop();
 	while ((c = *s) != '\0')
@@ -194,6 +193,7 @@ template(void)
 		DBG("('%s':='%s')\n", var, val);
 		(*scan->read)(pat);
 	}
+	save('\0');
 	delsym(var);
 	(*scan->resume)(state);
 	unkeep();
