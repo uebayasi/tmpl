@@ -48,8 +48,6 @@ initmacro(struct macro_scan_ops *o)
 void
 finimacro(void)
 {
-	save('\0');
-	ss_flush(scan->write);
 }
 
 void
@@ -83,8 +81,13 @@ pop(void)
 void
 save(char c)
 {
-	if (ss_put(c))
-		ERR("cannot push char!!!\n");
+	if (fp == top) {
+		if (c != '\0')
+			(*scan->write)(c);
+	} else {
+		if (ss_put(c))
+			ERR("cannot push char!!!\n");
+	}
 	DUMPCHAR((fp == top) ? '{' : '[', c);
 }
 
@@ -119,6 +122,7 @@ keep(char *s)
 	while (*s++ != '\0')
 		continue;
 	ss_keep(s);
+	fp--;
 }
 
 static void
@@ -126,11 +130,12 @@ unkeep(void)
 {
 	char *s, *k, c;
 
+	fp++;
 	s = ss_pop();
 	k = ss_pop();
-	while ((c = *s) != '\0')
-		*k++ = *s++;
 	ss_unkeep(k);
+	while ((c = *s++) != '\0')
+		save(c);
 }
 
 void

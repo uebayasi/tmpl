@@ -80,7 +80,7 @@ at	[@]
 
 #include "macro.h"
 
-static void macro_write(const char *);
+static void macro_write(char);
 static void macro_read(const char *);
 static void *macro_suspend(void);
 static void macro_resume(void *);
@@ -168,9 +168,9 @@ macro_end(void)
 }
 
 static void
-macro_write(const char *string)
+macro_write(char c)
 {
-	fputs(string, stdout);
+	fputc(c, stdout);
 }
 
 static void

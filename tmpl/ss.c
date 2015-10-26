@@ -67,19 +67,6 @@ ss_unkeep(char *s)
 	cur = s;
 }
 
-void
-ss_flush(void (*f)(const char *))
-{
-	while (ss != sse) {
-		char *s = ss_pop();
-		(*f)(s);
-	}
-	if (head < cur) {
-		(*f)(head);
-		cur = head;
-	}
-}
-
 #ifdef DEBUG
 void
 ss_dump(void)

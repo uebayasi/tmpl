@@ -23,7 +23,6 @@ int ss_put(char);
 void ss_push(void);
 void ss_keep(char *);
 void ss_unkeep(char *);
-void ss_flush(void (*)(const char *));
 #ifdef DEBUG
 void ss_dump(void);
 #else
