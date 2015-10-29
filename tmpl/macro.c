@@ -202,19 +202,7 @@ expand(void)
 }
 
 static void
-localiterscan(const char *var, const char *val)
-{
-	struct local l;
-
-	l.var = var;
-	l.val = val;
-	SLIST_INSERT_HEAD(&locals, &l, entry);
-	(*scan->scan)(NULL);
-	SLIST_REMOVE_HEAD(&locals, entry);
-}
-
-static void
-localiterstr(const char *var, const char *val, const char *pat)
+localiter(const char *var, const char *val, const char *pat)
 {
 	struct local l;
 
@@ -237,7 +225,7 @@ local(void)
 	keep(val);
 	ss_push();
 	f--;
-	localiterscan(var, val);
+	localiter(var, val, NULL);
 	f++;
 	s = ss_pop();
 	(void)unkeep();
@@ -249,7 +237,7 @@ static void
 templateiter(const char *var, const char *val, const char *pat)
 {
 	while ((val = getsym(val)) != NULL)
-		localiterstr(var, val, pat);
+		localiter(var, val, pat);
 }
 
 void
@@ -279,7 +267,7 @@ splititer(const char *var, char sep, const char *val, const char *pat)
 		if (q == NULL)
 			break;
 		*q = '\0';
-		localiterstr(var, p, pat);
+		localiter(var, p, pat);
 		p = q + 1;
 	}
 }
