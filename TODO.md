@@ -1,3 +1,5 @@
+o local var
+o flex reentrant
 o comment
 o test errors
 o optimize symtab
