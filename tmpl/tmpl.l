@@ -19,11 +19,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void just(void);
+static void just(yyscan_t);
 static void macro_start(void);
 static void define_delim(void);
 static void template_delim(void);
 static void macro_end(void);
+static void scan_error(const char *, ...);
 
 enum op {
 	MACRO = 1,
@@ -39,7 +40,9 @@ close	[}]
 equal	[=]
 at	[@]
 
-%s	TILDA
+%state	TILDA
+
+%option	reentrant
 
 %%
 
@@ -47,10 +50,10 @@ at	[@]
 	BEGIN(TILDA);
 }
 <INITIAL>. {
-	just();
+	just(yyscanner);
 }
 <INITIAL>[\r\n] {
-	just();
+	just(yyscanner);
 }
 
 <TILDA>{open} {
@@ -70,7 +73,7 @@ at	[@]
 	BEGIN(0);
 }
 <TILDA>{tilda} {
-	just();
+	just(yyscanner);
 	BEGIN(0);
 }
 <TILDA>[.\r\n] {
@@ -91,6 +94,7 @@ static void scan_error(const char *, ...);
 int
 main(int argc, char *argv[])
 {
+	yyscan_t scan;
 	static struct macro_ops ops = {
 		.write = &scan_write,
 		.read = &scan_read,
@@ -98,16 +102,18 @@ main(int argc, char *argv[])
 		.resume = &scan_resume,
 		.error = &scan_error,
 	};
+
 	initmacro(&ops);
-	yylex();
+	yylex_init(&scan);
+	yylex(scan);
 	finimacro();
 	return 0;
 }
 
 static void
-just(void)
+just(yyscan_t scan)
 {
-	save(yytext[0]);
+	save(yyget_text(scan)[0]);
 }
 
 static void
@@ -128,7 +134,7 @@ define_delim(void)
 	case TMPLVAR:
 	case TMPLVAL:
 	default:
-		yy_fatal_error("~= outside macro define!!!");
+		scan_error("~= outside macro define!!!");
 	}
 }
 
@@ -146,7 +152,7 @@ template_delim(void)
 		break;
 	case DEFINE:
 	default:
-		yy_fatal_error("~@ outside macro template!!!");
+		scan_error("~@ outside macro template!!!");
 	}
 }
 
@@ -166,7 +172,7 @@ macro_end(void)
 		template();
 		break;
 	default:
-		yy_fatal_error("out-of-context macro end!!!");
+		scan_error("out-of-context macro end!!!");
 		break;
 	}
 }
@@ -180,21 +186,27 @@ scan_write(char c)
 static void
 scan_read(const char *string)
 {
-	BEGIN(0);
-	yy_scan_string(string);
-	yylex();
+	yyscan_t scan;
+	YY_BUFFER_STATE state;
+
+	yylex_init(&scan);
+
+	state = yy_scan_string(string, scan);
+	yylex(scan);
+
+	yy_delete_buffer(state, scan);
+	yylex_destroy(scan);
 }
 
 static void *
 scan_suspend(void)
 {
-	return YY_CURRENT_BUFFER;
+	return NULL;
 }
 
 static void
 scan_resume(void *state)
 {
-	yy_switch_to_buffer(state);
 }
 
 static void
