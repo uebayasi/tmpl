@@ -237,9 +237,9 @@ macro_end(void *scan)
 		split();
 		break;
 	default:
-		if (main_scan_depth != 0) {
+		if (main_scan_depth != 0)
 			return 1; /* local */
-		} else
+		else
 			scan_error("out-of-context macro end!!!");
 		break;
 	}
