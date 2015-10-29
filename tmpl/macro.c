@@ -255,7 +255,7 @@ template(void)
 }
 
 static void
-splititer(const char *var, char sep, const char *val, const char *pat)
+splititer(const char *var, const char *sep, const char *val, const char *pat)
 {
 	char *p, *q;
 
@@ -263,7 +263,7 @@ splititer(const char *var, char sep, const char *val, const char *pat)
 	while (1) {
 		if (p == pat)
 			break;
-		q = strchr(p, sep);
+		q = strchr(p, sep[0]);
 		if (q == NULL)
 			break;
 		*q = '\0';
@@ -288,7 +288,7 @@ split(void)
 	keep(pat);
 	ss_push();
 	f--;
-	splititer(var, sep[0], val, pat);
+	splititer(var, sep, val, pat);
 	f++;
 	s = ss_pop();
 	(void)unkeep();
