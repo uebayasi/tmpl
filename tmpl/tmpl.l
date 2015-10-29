@@ -100,9 +100,7 @@ at	[@]
 #include "macro.h"
 
 static void scan_write(char);
-static void scan_read(void *, const char *);
-static void *scan_suspend(void);
-static void scan_resume(void *);
+static void scan_read(const char *);
 static void scan_scan(void);
 static void scan_error(const char *, ...);
 
@@ -115,8 +113,6 @@ main(int argc, char *argv[])
 	static struct macro_ops ops = {
 		.write = &scan_write,
 		.read = &scan_read,
-		.suspend = &scan_suspend,
-		.resume = &scan_resume,
 		.scan = &scan_scan,
 		.error = &scan_error,
 	};
@@ -227,7 +223,7 @@ scan_write(char c)
 }
 
 static void
-scan_read(void *state, const char *string)
+scan_read(const char *string)
 {
 	yyscan_t scan;
 	YY_BUFFER_STATE buf;
@@ -245,17 +241,6 @@ scan_scan(void)
 	main_scan_depth++;
 	yylex(main_scan);
 	main_scan_depth--;
-}
-
-static void *
-scan_suspend(void)
-{
-	return NULL;
-}
-
-static void
-scan_resume(void *state)
-{
 }
 
 static void

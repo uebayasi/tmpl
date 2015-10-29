@@ -227,19 +227,16 @@ void
 template(void)
 {
 	const char *var, *val, *pat;
-	void *state;
 
 	pat = pop();
 	val = pop();
 	var = pop();
 	keep(pat);
-	state = (*scan->suspend)();
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
-		(*scan->read)(state, pat);
+		(*scan->read)(pat);
 	}
 	delsym(var);
-	(*scan->resume)(state);
 	save('\0');
 	savestr(unkeep());
 }
