@@ -15,6 +15,7 @@
  */
 
 #include <stddef.h>
+#include "queue.h"
 #include "macro.h"
 #include "ss.h"
 #include "sym.h"
@@ -24,8 +25,18 @@
 #define	nitems(_a)	(sizeof((_a)) / sizeof((_a)[0]))
 #endif
 
+struct local;
+struct local {
+	SLIST_ENTRY(local) entry;
+	const char *var;
+	const char *val;
+};
+SLIST_HEAD(locallist, local);
+struct locallist ll = SLIST_HEAD_INITIALIZER(ll);
+
 struct frame *f, *top, *bot;
 struct macro_ops *scan;
+const char **head; /* local */
 
 void
 initmacro(struct macro_ops *o)
@@ -152,18 +163,58 @@ unexpand(const char *s)
 	savestr("~}");
 }
 
+static const char *
+lookuplocal(const char *var)
+{
+	struct local *l;
+
+	SLIST_FOREACH(l, &ll, entry) {
+		if (strcmp(var, l->var) == 0)
+			break;
+	}
+	return (l != NULL) ? l->val : NULL;
+}
+
+static const char *
+lookup(const char *var)
+{
+	const char *val;
+
+	if ((val = lookuplocal(var)) != NULL)
+		return val;
+	else {
+		var = newsym(var);
+		return getsym(var);
+	}
+}
+
 void
 expand(void)
 {
 	const char *var, *val;
 
 	var = pop();
-	var = newsym(var);
-	val = getsym(var);
+	val = lookup(var);
 	if (val == NULL)
 		unexpand(var);
 	else
 		savestr(val);
+}
+
+void
+local(void)
+{
+	struct local l;
+
+	l.val = pop();
+	l.var = pop();
+	keep(l.var);
+	keep(l.val);
+	SLIST_INSERT_HEAD(&ll, &l, entry);
+	/* XXX parse */
+	SLIST_REMOVE_HEAD(&ll, entry);
+	unkeep();
+	unkeep();
 }
 
 void

@@ -40,6 +40,7 @@ int delim(void);
 void new(void);
 void define(int);
 void expand(void);
+void local(void);
 void template(void);
 
 #endif /* _MACRO_H_ */
