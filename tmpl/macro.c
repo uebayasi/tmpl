@@ -214,7 +214,7 @@ localiterscan(const char *var, const char *val)
 }
 
 static void
-localiterread(const char *var, const char *val, const char *pat)
+localiterstr(const char *var, const char *val, const char *pat)
 {
 	struct local l;
 
@@ -249,7 +249,7 @@ static void
 templateiter(const char *var, const char *val, const char *pat)
 {
 	while ((val = getsym(val)) != NULL)
-		localiterread(var, val, pat);
+		localiterstr(var, val, pat);
 }
 
 void
@@ -279,7 +279,7 @@ splititer(const char *var, char sep, const char *val, const char *pat)
 		if (q == NULL)
 			break;
 		*q = '\0';
-		localiterread(var, p, pat);
+		localiterstr(var, p, pat);
 		p = q + 1;
 	}
 }
