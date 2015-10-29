@@ -110,8 +110,7 @@ slash	[/]
 #include "macro.h"
 
 static void scan_write(char);
-static void scan_read(const char *);
-static void scan_scan(void);
+static void scan_scan(const char *);
 static void scan_error(const char *, ...);
 
 yyscan_t main_scan;
@@ -122,7 +121,6 @@ main(int argc, char *argv[])
 {
 	static struct macro_ops ops = {
 		.write = &scan_write,
-		.read = &scan_read,
 		.scan = &scan_scan,
 		.error = &scan_error,
 	};
@@ -253,7 +251,7 @@ scan_write(char c)
 }
 
 static void
-scan_read(const char *string)
+scan_string(const char *string)
 {
 	yyscan_t scan;
 	YY_BUFFER_STATE buf;
@@ -266,11 +264,20 @@ scan_read(const char *string)
 }
 
 static void
-scan_scan(void)
+scan_rescan(void)
 {
 	main_scan_depth++;
 	yylex(main_scan);
 	main_scan_depth--;
+}
+
+static void
+scan_scan(const char *string)
+{
+	if (string != NULL)
+		scan_string(string);
+	else
+		scan_rescan();
 }
 
 static void

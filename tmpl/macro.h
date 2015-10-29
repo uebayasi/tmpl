@@ -26,8 +26,7 @@ struct frame {
 
 struct macro_ops {
 	void (*write)(char);
-	void (*read)(const char *);
-	void (*scan)(void);
+	void (*scan)(const char *);
 	void (*error)(const char *, ...) __attribute__((__noreturn__));
 };
 

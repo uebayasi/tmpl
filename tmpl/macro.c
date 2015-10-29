@@ -209,7 +209,7 @@ localiterscan(const char *var, const char *val)
 	l.var = var;
 	l.val = val;
 	SLIST_INSERT_HEAD(&locals, &l, entry);
-	(*scan->scan)();
+	(*scan->scan)(NULL);
 	SLIST_REMOVE_HEAD(&locals, entry);
 }
 
@@ -221,7 +221,7 @@ localiterread(const char *var, const char *val, const char *pat)
 	l.var = var;
 	l.val = val;
 	SLIST_INSERT_HEAD(&locals, &l, entry);
-	(*scan->read)(pat);
+	(*scan->scan)(pat);
 	SLIST_REMOVE_HEAD(&locals, entry);
 }
 
