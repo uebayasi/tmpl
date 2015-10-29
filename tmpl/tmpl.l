@@ -25,6 +25,8 @@ static void define_delim(void);
 static int local_delim(void);
 static int local_start(void);
 static void template_delim(void);
+static int split_start(void);
+static void split_delim(void);
 static int macro_end(void *);
 static void scan_error(const char *, ...);
 
@@ -34,6 +36,9 @@ enum op {
 	LOCAL,
 	TMPLVAR,
 	TMPLVAL,
+	SPLITSEP,
+	SPLITVAL,
+	SPLITPAT,
 };
 %}
 
@@ -43,6 +48,7 @@ close	[}]
 equal	[=]
 bar	[|]
 at	[@]
+slash	[/]
 
 %state	TILDA
 
@@ -78,6 +84,10 @@ at	[@]
 <TILDA>{at} {
 	BEGIN(0);
 	template_delim();
+}
+<TILDA>{slash} {
+	BEGIN(0);
+	split_delim();
 }
 <TILDA>{close} {
 	BEGIN(0);
@@ -160,7 +170,7 @@ local_delim(void)
 		break;
 	case LOCAL:
 		return 1;
-		break;
+		/* NOTREACHED */
 	default:
 		scan_error("~| outside macro define!!!");
 	}
@@ -185,9 +195,26 @@ template_delim(void)
 		new();
 		push(TMPLVAL);
 		break;
-	case DEFINE:
 	default:
 		scan_error("~@ outside macro template!!!");
+	}
+}
+
+static void
+split_delim(void)
+{
+	switch (delim()) {
+	case MACRO:
+		push(SPLITSEP);
+		break;
+	case SPLITSEP:
+		push(SPLITVAL);
+		break;
+	case SPLITVAL:
+		push(SPLITPAT);
+		break;
+	default:
+		scan_error("~/ outside macro define!!!");
 	}
 }
 
@@ -205,6 +232,9 @@ macro_end(void *scan)
 		break;
 	case TMPLVAL:
 		template();
+		break;
+	case SPLITPAT:
+		split();
 		break;
 	default:
 		if (main_scan_depth != 0) {

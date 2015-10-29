@@ -15,6 +15,7 @@
  */
 
 #include <stddef.h>
+#include <string.h>
 #include "queue.h"
 #include "macro.h"
 #include "ss.h"
@@ -239,4 +240,43 @@ template(void)
 	delsym(var);
 	save('\0');
 	savestr(unkeep());
+}
+
+void
+split(void)
+{
+	const char *var, *sep, *val, *pat;
+	struct local l;
+	char *p, *q, *s;
+
+	pat = pop();
+	val = pop();
+	sep = pop();
+	var = pop();
+	keep(var);
+	keep(sep);
+	keep(val);
+	keep(pat);
+	ss_push();
+	f--;
+	p = val;
+	while (p < pat) {
+		q = strchr(p, sep[0]);
+		if (q == NULL)
+			break;
+		*q = '\0';
+		l.var = var;
+		l.val = p;
+		SLIST_INSERT_HEAD(&locals, &l, entry);
+		(*scan->read)(pat);
+		SLIST_REMOVE_HEAD(&locals, entry);
+		p = q + 1;
+	}
+	f++;
+	s = ss_pop();
+	(void)unkeep();
+	(void)unkeep();
+	(void)unkeep();
+	(void)unkeep();
+	savestr(s);
 }
