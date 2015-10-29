@@ -211,7 +211,13 @@ local(void)
 	keep(l.var);
 	keep(l.val);
 	SLIST_INSERT_HEAD(&ll, &l, entry);
-	/* XXX parse */
+#if 0
+	void *state;
+
+	state = (*scan->suspend)();
+	(*scan->read)(pat);
+	(*scan->resume)(state);
+#endif
 	SLIST_REMOVE_HEAD(&ll, entry);
 	unkeep();
 	unkeep();
