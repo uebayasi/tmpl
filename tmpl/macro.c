@@ -228,16 +228,19 @@ void
 template(void)
 {
 	const char *var, *val, *pat;
+	struct local l;
 
 	pat = pop();
 	val = pop();
 	var = pop();
 	keep(pat);
 	while ((val = getsym(val)) != NULL) {
-		setsym(var, val);
+		l.var = var;
+		l.val = val;
+		SLIST_INSERT_HEAD(&locals, &l, entry);
 		(*scan->read)(pat);
+		SLIST_REMOVE_HEAD(&locals, entry);
 	}
-	delsym(var);
 	save('\0');
 	savestr(unkeep());
 }
@@ -246,8 +249,8 @@ void
 split(void)
 {
 	const char *var, *sep, *val, *pat;
-	struct local l;
 	char *p, *q, *s;
+	struct local l;
 
 	pat = pop();
 	val = pop();
