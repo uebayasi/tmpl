@@ -23,12 +23,11 @@ static void just(yyscan_t);
 static void macro_start(void);
 static void define_delim(void);
 static int local_delim(void);
-static int local_start(void);
+static void local_start(void);
 static void template_delim(void);
-static int split_start(void);
 static void split_delim(void);
 static int macro_end(void *);
-static void scan_error(const char *, ...);
+static void scan_error(const char *, ...) __attribute__((__noreturn__));
 
 enum op {
 	MACRO = 1,
@@ -111,7 +110,7 @@ slash	[/]
 
 static void scan_write(char);
 static void scan_scan(const char *);
-static void scan_error(const char *, ...);
+static void scan_error(const char *, ...) __attribute__((__noreturn__));
 
 yyscan_t main_scan;
 int main_scan_depth;
@@ -124,6 +123,9 @@ main(int argc, char *argv[])
 		.scan = &scan_scan,
 		.error = &scan_error,
 	};
+
+	(void)yyunput;
+	(void)input;
 
 	initmacro(&ops);
 	yylex_init(&main_scan);
@@ -175,7 +177,7 @@ local_delim(void)
 	return 0;
 }
 
-static int
+static void
 local_start(void)
 {
 	local();
