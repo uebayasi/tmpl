@@ -215,7 +215,7 @@ local(void)
 	void *state;
 
 	state = (*scan->suspend)();
-	(*scan->read)(pat);
+	(*scan->read)(state, pat);
 	(*scan->resume)(state);
 #endif
 	SLIST_REMOVE_HEAD(&ll, entry);
@@ -236,7 +236,7 @@ template(void)
 	state = (*scan->suspend)();
 	while ((val = getsym(val)) != NULL) {
 		setsym(var, val);
-		(*scan->read)(pat);
+		(*scan->read)(state, pat);
 	}
 	delsym(var);
 	(*scan->resume)(state);

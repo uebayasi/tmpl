@@ -86,7 +86,7 @@ at	[@]
 #include "macro.h"
 
 static void scan_write(char);
-static void scan_read(const char *);
+static void scan_read(void *, const char *);
 static void *scan_suspend(void);
 static void scan_resume(void *);
 static void scan_error(const char *, ...);
@@ -184,17 +184,17 @@ scan_write(char c)
 }
 
 static void
-scan_read(const char *string)
+scan_read(void *state, const char *string)
 {
 	yyscan_t scan;
-	YY_BUFFER_STATE state;
+	YY_BUFFER_STATE buf;
 
 	yylex_init(&scan);
 
-	state = yy_scan_string(string, scan);
+	buf = yy_scan_string(string, scan);
 	yylex(scan);
 
-	yy_delete_buffer(state, scan);
+	yy_delete_buffer(buf, scan);
 	yylex_destroy(scan);
 }
 
