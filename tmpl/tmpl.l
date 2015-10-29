@@ -22,13 +22,16 @@
 static void just(yyscan_t);
 static void macro_start(void);
 static void define_delim(void);
+static int local_delim(void);
+static int local_start(void);
 static void template_delim(void);
-static void macro_end(void);
+static int macro_end(void *);
 static void scan_error(const char *, ...);
 
 enum op {
 	MACRO = 1,
 	DEFINE,
+	LOCAL,
 	TMPLVAR,
 	TMPLVAL,
 };
@@ -38,6 +41,7 @@ tilda	[~]
 open	[{]
 close	[}]
 equal	[=]
+bar	[|]
 at	[@]
 
 %state	TILDA
@@ -64,13 +68,22 @@ at	[@]
 	define_delim();
 	BEGIN(0);
 }
+<TILDA>{bar} {
+	if (local_delim()) {
+		BEGIN(0);
+		local_start();
+	} else
+		BEGIN(0);
+}
 <TILDA>{at} {
 	template_delim();
 	BEGIN(0);
 }
 <TILDA>{close} {
-	macro_end();
-	BEGIN(0);
+	if (macro_end(yyscanner))
+		return 0; /* local */
+	else
+		BEGIN(0);
 }
 <TILDA>{tilda} {
 	just(yyscanner);
@@ -89,23 +102,28 @@ static void scan_write(char);
 static void scan_read(void *, const char *);
 static void *scan_suspend(void);
 static void scan_resume(void *);
+static void scan_scan(void);
 static void scan_error(const char *, ...);
+
+yyscan_t main_scan;
+int main_scan_depth;
 
 int
 main(int argc, char *argv[])
 {
-	yyscan_t scan;
 	static struct macro_ops ops = {
 		.write = &scan_write,
 		.read = &scan_read,
 		.suspend = &scan_suspend,
 		.resume = &scan_resume,
+		.scan = &scan_scan,
 		.error = &scan_error,
 	};
 
 	initmacro(&ops);
-	yylex_init(&scan);
-	yylex(scan);
+	yylex_init(&main_scan);
+	yylex(main_scan);
+	yylex_destroy(main_scan);
 	finimacro();
 	return 0;
 }
@@ -131,11 +149,31 @@ define_delim(void)
 		new();
 		push(DEFINE);
 		break;
-	case TMPLVAR:
-	case TMPLVAL:
 	default:
 		scan_error("~= outside macro define!!!");
 	}
+}
+
+static int
+local_delim(void)
+{
+	switch (delim()) {
+	case MACRO:
+		push(LOCAL);
+		break;
+	case LOCAL:
+		return 1;
+		break;
+	default:
+		scan_error("~| outside macro define!!!");
+	}
+	return 0;
+}
+
+static int
+local_start(void)
+{
+	local();
 }
 
 static void
@@ -156,8 +194,8 @@ template_delim(void)
 	}
 }
 
-static void
-macro_end(void)
+static int
+macro_end(void *scan)
 {
 	switch (delim()) {
 	case MACRO:
@@ -172,9 +210,13 @@ macro_end(void)
 		template();
 		break;
 	default:
-		scan_error("out-of-context macro end!!!");
+		if (main_scan_depth != 0) {
+			return 1; /* local */
+		} else
+			scan_error("out-of-context macro end!!!");
 		break;
 	}
+	return 0;
 }
 
 static void
@@ -190,12 +232,18 @@ scan_read(void *state, const char *string)
 	YY_BUFFER_STATE buf;
 
 	yylex_init(&scan);
-
 	buf = yy_scan_string(string, scan);
 	yylex(scan);
-
 	yy_delete_buffer(buf, scan);
 	yylex_destroy(scan);
+}
+
+static void
+scan_scan(void)
+{
+	main_scan_depth++;
+	yylex(main_scan);
+	main_scan_depth--;
 }
 
 static void *

@@ -205,22 +205,24 @@ void
 local(void)
 {
 	struct local l;
+	char *s;
 
 	l.val = pop();
 	l.var = pop();
 	keep(l.var);
 	keep(l.val);
 	SLIST_INSERT_HEAD(&ll, &l, entry);
-#if 0
-	void *state;
-
-	state = (*scan->suspend)();
-	(*scan->read)(state, pat);
-	(*scan->resume)(state);
-#endif
+	f--;
+	ss_push();
+	(*scan->scan)();
+	f++;
+	s = ss_pop();
 	SLIST_REMOVE_HEAD(&ll, entry);
-	unkeep();
-	unkeep();
+	f++;
+	ss_unkeep();
+	f++;
+	ss_unkeep();
+	savestr(s);
 }
 
 void

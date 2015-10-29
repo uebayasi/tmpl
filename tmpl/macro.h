@@ -29,6 +29,7 @@ struct macro_ops {
 	void (*read)(void *, const char *);
 	void *(*suspend)(void);
 	void (*resume)(void *);
+	void (*scan)(void);
 	void (*error)(const char *, ...) __attribute__((__noreturn__));
 };
 
