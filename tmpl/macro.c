@@ -32,7 +32,7 @@ struct local {
 	const char *val;
 };
 SLIST_HEAD(locallist, local);
-struct locallist ll = SLIST_HEAD_INITIALIZER(ll);
+struct locallist locals = SLIST_HEAD_INITIALIZER(locals);
 
 struct frame *f, *top, *bot;
 struct macro_ops *scan;
@@ -168,7 +168,7 @@ lookuplocal(const char *var)
 {
 	struct local *l;
 
-	SLIST_FOREACH(l, &ll, entry) {
+	SLIST_FOREACH(l, &locals, entry) {
 		if (strcmp(var, l->var) == 0)
 			break;
 	}
@@ -212,11 +212,11 @@ local(void)
 	keep(l.var);
 	keep(l.val);
 	ss_push();
-	SLIST_INSERT_HEAD(&ll, &l, entry);
+	SLIST_INSERT_HEAD(&locals, &l, entry);
 	f--;
 	(*scan->scan)();
 	f++;
-	SLIST_REMOVE_HEAD(&ll, entry);
+	SLIST_REMOVE_HEAD(&locals, entry);
 	s = ss_pop();
 	(void)unkeep();
 	(void)unkeep();
