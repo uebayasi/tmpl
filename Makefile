@@ -22,20 +22,27 @@ tmpl_exe_OBJS= \
 ./tmpl/tmpl.c: ./tmpl/tmpl.l
 	flex -o./tmpl/tmpl.c ./tmpl/tmpl.l
 
-test:
-	@cd ./tests && ./test.sh test0.tmpl
-	@cd ./tests && ./test.sh test1.tmpl
-	@cd ./tests && ./test.sh test2.tmpl
-	@cd ./tests && ./test.sh test3.tmpl
-	@cd ./tests && ./test.sh test4.tmpl
-	@cd ./tests && ./test.sh test5.tmpl
-	@cd ./tests && ./test.sh test6.tmpl
-	@cd ./tests && ./test.sh test7.tmpl
-	@cd ./tests && ./test.sh test8.tmpl
-	@cd ./tests && ./test.sh test9.tmpl
-	@cd ./tests && ./test.sh test10.tmpl
-	@cd ./tests && ./test.sh test11.tmpl
-	@cd ./tests && ./test.sh test12.tmpl
+tmpl_tests= \
+test0 \
+test1 \
+test2 \
+test3 \
+test4 \
+test5 \
+test6 \
+test7 \
+test8 \
+test9 \
+test10 \
+test11 \
+test12 \
+
+.for t in ${tmpl_tests}
+test: ./tests/${t}.tmpl.out
+${t}: ./tests/${t}.tmpl.out
+./tests/${t}.tmpl.out: ./tests/${t}.tmpl ./tests/test.sh ./tmpl/tmpl.exe
+	@cd ./tests && ./test.sh ${t}.tmpl
+.endfor
 
 # symtab
 
