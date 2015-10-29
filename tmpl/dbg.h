@@ -26,7 +26,7 @@
 #include <stdio.h>
 
 #define	DBGINDENT()	do { \
-	int d = top - fp; \
+	int d = top - f; \
 	while (d-- > 0) fputc('\t', stderr); \
 } while (0)
 
