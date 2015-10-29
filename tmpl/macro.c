@@ -37,7 +37,6 @@ struct locallist locals = SLIST_HEAD_INITIALIZER(locals);
 
 struct frame *f, *top, *bot;
 struct macro_ops *scan;
-const char **head; /* local */
 
 void
 initmacro(struct macro_ops *o)
@@ -224,33 +223,62 @@ local(void)
 	savestr(s);
 }
 
+static void
+localitercb(const char *var, const char *val, const char *pat)
+{
+	struct local l;
+
+	l.var = var;
+	l.val = val;
+	SLIST_INSERT_HEAD(&locals, &l, entry);
+	(*scan->read)(pat);
+	SLIST_REMOVE_HEAD(&locals, entry);
+}
+
+static void
+templateiter(const char *var, const char *val, const char *pat)
+{
+	while ((val = getsym(val)) != NULL)
+		localitercb(var, val, pat);
+}
+
 void
 template(void)
 {
 	const char *var, *val, *pat;
-	struct local l;
 
 	pat = pop();
 	val = pop();
 	var = pop();
 	keep(pat);
-	while ((val = getsym(val)) != NULL) {
-		l.var = var;
-		l.val = val;
-		SLIST_INSERT_HEAD(&locals, &l, entry);
-		(*scan->read)(pat);
-		SLIST_REMOVE_HEAD(&locals, entry);
-	}
+	templateiter(var, val, pat);
 	save('\0');
 	savestr(unkeep());
+}
+
+static void
+splititer(const char *var, char sep, const char *val, const char *pat)
+{
+	char *p, *q;
+
+	p = val;
+	while (1) {
+		if (p == pat)
+			break;
+		q = strchr(p, sep);
+		if (q == NULL)
+			break;
+		*q = '\0';
+		localitercb(var, p, pat);
+		p = q + 1;
+	}
 }
 
 void
 split(void)
 {
 	const char *var, *sep, *val, *pat;
-	char *p, *q, *s;
-	struct local l;
+	char *s;
 
 	pat = pop();
 	val = pop();
@@ -262,19 +290,7 @@ split(void)
 	keep(pat);
 	ss_push();
 	f--;
-	p = val;
-	while (p < pat) {
-		q = strchr(p, sep[0]);
-		if (q == NULL)
-			break;
-		*q = '\0';
-		l.var = var;
-		l.val = p;
-		SLIST_INSERT_HEAD(&locals, &l, entry);
-		(*scan->read)(pat);
-		SLIST_REMOVE_HEAD(&locals, entry);
-		p = q + 1;
-	}
+	splititer(var, sep[0], val, pat);
 	f++;
 	s = ss_pop();
 	(void)unkeep();
