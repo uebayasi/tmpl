@@ -131,11 +131,11 @@ keep(char *s)
 	f--;
 }
 
-static void
+static char *
 unkeep(void)
 {
 	f++;
-	savestr(ss_unkeep());
+	return ss_unkeep();
 }
 
 void
@@ -211,17 +211,15 @@ local(void)
 	l.var = pop();
 	keep(l.var);
 	keep(l.val);
+	ss_push();
 	SLIST_INSERT_HEAD(&ll, &l, entry);
 	f--;
-	ss_push();
 	(*scan->scan)();
 	f++;
-	s = ss_pop();
 	SLIST_REMOVE_HEAD(&ll, entry);
-	f++;
-	ss_unkeep();
-	f++;
-	ss_unkeep();
+	s = ss_pop();
+	(void)unkeep();
+	(void)unkeep();
 	savestr(s);
 }
 
@@ -243,5 +241,5 @@ template(void)
 	delsym(var);
 	(*scan->resume)(state);
 	save('\0');
-	unkeep();
+	savestr(unkeep());
 }
