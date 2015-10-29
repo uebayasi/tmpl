@@ -61,33 +61,34 @@ at	[@]
 }
 
 <TILDA>{open} {
-	macro_start();
 	BEGIN(0);
+	macro_start();
 }
 <TILDA>{equal} {
-	define_delim();
 	BEGIN(0);
+	define_delim();
 }
 <TILDA>{bar} {
-	if (local_delim()) {
-		BEGIN(0);
+	BEGIN(0);
+	if (local_delim())
 		local_start();
-	} else
-		BEGIN(0);
+	else
+		; /* continue */
 }
 <TILDA>{at} {
-	template_delim();
 	BEGIN(0);
+	template_delim();
 }
 <TILDA>{close} {
+	BEGIN(0);
 	if (macro_end(yyscanner))
-		return 0; /* local */
+		return 0; /* local_end() */
 	else
-		BEGIN(0);
+		; /* continue */
 }
 <TILDA>{tilda} {
-	just(yyscanner);
 	BEGIN(0);
+	just(yyscanner);
 }
 <TILDA>[.\r\n] {
 	/* discard */
