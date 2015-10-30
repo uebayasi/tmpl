@@ -95,9 +95,11 @@ ss_unkeep(void)
 char **
 ss_getvars(int n)
 {
-	char **g = ss - n;
+	char **v;
+
+	v = ss - n;
 	ss_push();
-	return g;
+	return v;
 }
 
 char *
