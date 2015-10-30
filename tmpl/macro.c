@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <stddef.h>
 #include <string.h>
 #include "queue.h"
@@ -43,7 +44,7 @@ initmacro(struct macro_ops *o)
 	static struct frame frames[MACRO_DEPTH];
 
 	initsym();
-	ss_alloc(chars, chars + nitems(chars), strs, strs + nitems(strs));
+	ss_init(chars, chars + nitems(chars), strs, strs + nitems(strs));
 	bot = frames;
 	f = top = bot + nitems(frames);
 	scan = o;
@@ -52,6 +53,8 @@ initmacro(struct macro_ops *o)
 void
 finimacro(void)
 {
+	assert(f == top);
+	ss_fini();
 }
 
 void
@@ -247,6 +250,8 @@ template(void)
 	var = pop();
 	keep(pat);
 	templateiter(var, val, pat);
+	ss_put('\0');
+	savestr(unkeep());
 }
 
 static void

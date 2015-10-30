@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include "ss.h"
 #include "dbg.h"
 
@@ -21,12 +22,19 @@ static char *head, *tail, *cur;
 static char **sss, **sse, **ss;
 
 void
-ss_alloc(char *p, char *q, char **s, char **e)
+ss_init(char *p, char *q, char **s, char **e)
 {
 	head = cur = p;
 	tail = q;
 	sss = s;
 	sse = ss = e;
+}
+
+void
+ss_fini(void)
+{
+	assert(cur == head);
+	assert(ss == sse);
 }
 
 int

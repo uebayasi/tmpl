@@ -17,7 +17,8 @@
 #ifndef _SS_H_
 #define _SS_H_
 
-void ss_alloc(char *, char *, char **, char **);
+void ss_init(char *, char *, char **, char **);
+void ss_fini(void);
 char *ss_pop(void);
 int ss_put(char);
 int ss_push(void);
