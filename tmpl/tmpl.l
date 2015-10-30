@@ -18,7 +18,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "scan.h"
 
 static void just(yyscan_t);
 static void macro_start(void);
@@ -116,6 +115,7 @@ slash	[/]
 %%
 
 #include "macro.h"
+#include "scan.h"
 
 static void scan_write(char);
 static void scan_scan(const char *);
@@ -251,10 +251,10 @@ macro_end(void *scan)
 		split();
 		break;
 	default:
-		if (scan_depth())
-			return 1; /* local */
-		else
+		if (scan_depth() == 0)
 			scan_error("out-of-context macro end!!!");
+		else
+			return 1; /* local */
 		break;
 	}
 	return 0;
