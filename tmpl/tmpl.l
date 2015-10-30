@@ -18,6 +18,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "scan.h"
 
 static void just(yyscan_t);
 static void macro_start(void);
@@ -27,8 +28,6 @@ static void local_start(void);
 static void template_delim(void);
 static void split_delim(void);
 static int macro_end(void *);
-static void scan_error(const char *, ...) __attribute__((__noreturn__));
-static int scan_depth(void);
 
 enum op {
 	MACRO = 1,
@@ -99,11 +98,7 @@ slash	[/]
 }
 <TILDA>{close} {
 	BEGIN(0);
-	if (scan_depth() == 0) {
-		yytext[0] = '\0';
-		just(yyscanner);
-	} else
-		; /* nothing */
+	yytext[0] = '\0';
 	if (macro_end(yyscanner))
 		return 0; /* local_end() */
 	else
@@ -125,6 +120,7 @@ slash	[/]
 static void scan_write(char);
 static void scan_scan(const char *);
 static void scan_error(const char *, ...) __attribute__((__noreturn__));
+static int scan_depth(void);
 
 yyscan_t main_scan;
 static int main_scan_depth;
@@ -235,6 +231,10 @@ split_delim(void)
 static int
 macro_end(void *scan)
 {
+	if (scan_depth() == 0) {
+		just(scan); /* \0 */
+	} else
+		; /* nothing */
 	switch (delim()) {
 	case MACRO:
 		new();
