@@ -2,7 +2,7 @@
 
 # common
 
-CFLAGS=		-Wall -g -O0
+CFLAGS=		-Wall -Werror -g -O0
 #CPPFLAGS=	-DDEBUG
 CC=		cc ${CPPFLAGS} ${CFLAGS}
 

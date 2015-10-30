@@ -26,6 +26,16 @@
 #define	nitems(_a)	(sizeof((_a)) / sizeof((_a)[0]))
 #endif
 
+static inline char *overwrite(const char *cs) {
+	union {
+		const char *cs;
+		char *s;
+	} u = {
+		.cs = cs
+	};
+	return u.s;
+}
+
 struct local;
 struct local {
 	SLIST_ENTRY(local) entry;
@@ -124,9 +134,9 @@ new(void)
 }
 
 static void
-keep(char *s)
+keep(const char *s)
 {
-	if (ss_keep(s))
+	if (ss_keep(overwrite(s)))
 		(*scan->error)("cannot push char!!!\n");
 	f--;
 }
@@ -259,7 +269,7 @@ splititer(const char *var, const char *sep, const char *val, const char *pat)
 {
 	char *p, *q;
 
-	p = val;
+	p = overwrite(val);
 	while (1) {
 		if (p == pat)
 			break;
