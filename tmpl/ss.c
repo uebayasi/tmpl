@@ -54,7 +54,7 @@ ss_push(void)
 	if (ss == sss)
 		return 1;
 	else {
-		*--ss = cur;
+		*ss++ = cur;
 		return 0;
 	}
 }
@@ -65,7 +65,7 @@ ss_pop(void)
 	if (ss == sse)
 		return (void *)-1;
 	else {
-		cur = *ss++;
+		cur = *--ss;
 		return cur;
 	}
 }

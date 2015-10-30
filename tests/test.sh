@@ -2,7 +2,9 @@
 
 ################################################################################
 
-tmpl=$1
+test=$1
+tmpl=${test}.tmpl
+scrpt=${test}.sh
 
 ################################################################################
 
@@ -68,7 +70,11 @@ dump() {
 	local tmpl=$1
 
 	{
-		show INPUT $tmpl
+		if [ -e $tmpl ]; then
+			show INPUT $tmpl
+		else
+			:
+		fi
 		show OUTPUT $tmpl.out
 		show ERR $tmpl.err
 		show EXP $tmpl.exp
@@ -77,7 +83,11 @@ dump() {
 
 ################################################################################
 
-../tmpl/tmpl.exe <$tmpl >$tmpl.out 2>$tmpl.err
+if [ -e $tmpl ]; then
+	../tmpl/tmpl.exe <$tmpl
+else
+	sh $scrpt | ../tmpl/tmpl.exe
+fi >$tmpl.out 2>$tmpl.err
 res=$?
 
 if [ -r $tmpl.exp ]; then

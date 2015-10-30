@@ -38,12 +38,18 @@ test11 \
 test12 \
 test13 \
 test14 \
+test15 \
 
 .for t in ${tmpl_tests}
 test: ./tests/${t}.tmpl.out
 ${t}: ./tests/${t}.tmpl.out
-./tests/${t}.tmpl.out: ./tests/${t}.tmpl ./tests/test.sh ./tmpl/tmpl.exe
-	@cd ./tests && ./test.sh ${t}.tmpl
+.if exists(./tests/${t}.tmpl)
+./tests/${t}.tmpl.out: ./tests/${t}.tmpl
+.else
+./tests/${t}.tmpl.out: ./tests/${t}.sh
+.endif
+./tests/${t}.tmpl.out: ./tests/test.sh ./tmpl/tmpl.exe
+	@cd ./tests && ./test.sh ${t}
 .endfor
 
 # symtab
