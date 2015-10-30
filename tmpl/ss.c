@@ -78,7 +78,6 @@ ss_keep(char *s)
 	while (*s++ != '\0')
 		continue;
 	cur = s;
-	ss_push();
 	return 0;
 }
 
@@ -88,6 +87,7 @@ ss_unkeep(void)
 	char *s;
 
 	s = ss_pop();
-	(void)ss_pop();
+	while (*s++ != '\0')
+		continue;
 	return s;
 }
