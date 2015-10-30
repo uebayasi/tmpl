@@ -230,9 +230,9 @@ split_delim(void)
 static int
 macro_end(void *scan)
 {
-	if (scan_depth() == 0) {
+	if (scan_depth() == 0)
 		just(scan); /* \0 */
-	} else
+	else
 		; /* nothing */
 	switch (delim()) {
 	case MACRO:
