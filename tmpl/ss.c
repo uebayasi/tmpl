@@ -91,3 +91,22 @@ ss_unkeep(void)
 		continue;
 	return s;
 }
+
+char **
+ss_getvars(int n)
+{
+	char **g = ss - n;
+	ss_push();
+	return g;
+}
+
+char *
+ss_putvars(int n)
+{
+	char *s;
+
+	s = ss_pop();
+	ss -= n;
+	cur = *ss;
+	return s;
+}

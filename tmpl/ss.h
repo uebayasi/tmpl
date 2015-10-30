@@ -24,5 +24,7 @@ int ss_put(char);
 int ss_push(void);
 int ss_keep(char *);
 char *ss_unkeep(void);
+char **ss_getvars(int);
+char *ss_putvars(int);
 
 #endif /* _SS_H_ */

@@ -135,6 +135,19 @@ unkeep(void)
 	return ss_unkeep();
 }
 
+static const char **
+getvars(int n)
+{
+	f += n;
+	return (const char **)ss_getvars(n);
+}
+
+static void
+putvars(int n)
+{
+	savestr(ss_putvars(n));
+}
+
 void
 define(int end)
 {
@@ -269,24 +282,10 @@ splititer(const char *var, const char *sep, const char *val, const char *pat)
 void
 split(void)
 {
-	const char *var, *sep, *val, *pat;
-	char *s;
+	const char **v;
 
-	pat = pop();
-	val = pop();
-	sep = pop();
-	var = pop();
-	keep(var);
-	keep(sep);
-	keep(val);
-	keep(pat);
-	ss_push();
-	splititer(var, sep, val, pat);
+	v = getvars(4);
+	splititer(v[0], v[1], v[2], v[3]);
 	ss_put('\0');
-	s = ss_pop();
-	(void)unkeep();
-	(void)unkeep();
-	(void)unkeep();
-	(void)unkeep();
-	savestr(s);
+	putvars(4);
 }
