@@ -1,4 +1,4 @@
-o rethink main_scan_depth (local rescan)
+o rethink keep/unkeep vs. ss usage
 o comment
 o test errors
 o optimize symtab
