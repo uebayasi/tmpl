@@ -13,7 +13,6 @@ all: ./tmpl/tmpl.exe test
 tmpl_exe_OBJS= \
 ./tmpl/tmpl.o \
 ./tmpl/macro.o \
-./tmpl/scan.o \
 ./tmpl/ss.o \
 ./tmpl/sym.o \
 

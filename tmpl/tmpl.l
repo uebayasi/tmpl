@@ -115,7 +115,6 @@ slash	[/]
 %%
 
 #include "macro.h"
-#include "scan.h"
 
 static void scan_write(char);
 static void scan_scan(const char *);
