@@ -28,6 +28,7 @@ static void template_delim(void);
 static void split_delim(void);
 static int macro_end(void *);
 static void scan_error(const char *, ...) __attribute__((__noreturn__));
+static int scan_depth(void);
 
 enum op {
 	MACRO = 1,
@@ -71,10 +72,14 @@ slash	[/]
 }
 <TILDA>{equal} {
 	BEGIN(0);
+	yytext[0] = '\0';
+	just(yyscanner);
 	define_delim();
 }
 <TILDA>{bar} {
 	BEGIN(0);
+	yytext[0] = '\0';
+	just(yyscanner);
 	if (local_delim())
 		local_start();
 	else
@@ -82,14 +87,23 @@ slash	[/]
 }
 <TILDA>{at} {
 	BEGIN(0);
+	yytext[0] = '\0';
+	just(yyscanner);
 	template_delim();
 }
 <TILDA>{slash} {
 	BEGIN(0);
+	yytext[0] = '\0';
+	just(yyscanner);
 	split_delim();
 }
 <TILDA>{close} {
 	BEGIN(0);
+	if (scan_depth() == 0) {
+		yytext[0] = '\0';
+		just(yyscanner);
+	} else
+		; /* nothing */
 	if (macro_end(yyscanner))
 		return 0; /* local_end() */
 	else
@@ -113,7 +127,7 @@ static void scan_scan(const char *);
 static void scan_error(const char *, ...) __attribute__((__noreturn__));
 
 yyscan_t main_scan;
-int main_scan_depth;
+static int main_scan_depth;
 
 int
 main(int argc, char *argv[])
@@ -237,7 +251,7 @@ macro_end(void *scan)
 		split();
 		break;
 	default:
-		if (main_scan_depth != 0)
+		if (scan_depth())
 			return 1; /* local */
 		else
 			scan_error("out-of-context macro end!!!");
@@ -291,4 +305,10 @@ scan_error(const char *msg, ...)
 	vfprintf(stderr, msg, ap);
 	va_end(ap);
 	exit(1);
+}
+
+static int
+scan_depth(void)
+{
+	return main_scan_depth;
 }

@@ -90,14 +90,9 @@ pop(void)
 void
 save(char c)
 {
-	extern int main_scan_depth;
-
-	if (f == top) {
-		if (main_scan_depth != 0 && c == '\0')
-			;
-		else
-			(*scan->write)(c);
-	} else if (ss_put(c))
+	if (f == top)
+		(*scan->write)(c);
+	else if (ss_put(c))
 		(*scan->error)("cannot push char!!!\n");
 	DUMPCHAR((f == top) ? '{' : '[', c);
 }
@@ -114,7 +109,6 @@ savestr(const char *s)
 int
 delim(void)
 {
-	save('\0');
 	return f->op;
 }
 
