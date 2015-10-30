@@ -282,9 +282,8 @@ split(void)
 	keep(val);
 	keep(pat);
 	ss_push();
-	f--;
 	splititer(var, sep, val, pat);
-	f++;
+	ss_put('\0');
 	s = ss_pop();
 	(void)unkeep();
 	(void)unkeep();
