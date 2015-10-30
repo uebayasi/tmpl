@@ -100,9 +100,14 @@ pop(void)
 void
 save(char c)
 {
-	if (f == top)
-		(*scan->write)(c);
-	else if (ss_put(c))
+	extern int main_scan_depth;
+
+	if (f == top) {
+		if (main_scan_depth != 0 && c == '\0')
+			;
+		else
+			(*scan->write)(c);
+	} else if (ss_put(c))
 		(*scan->error)("cannot push char!!!\n");
 	DUMPCHAR((f == top) ? '{' : '[', c);
 }
@@ -138,13 +143,11 @@ keep(const char *s)
 {
 	if (ss_keep(overwrite(s)))
 		(*scan->error)("cannot push char!!!\n");
-	f--;
 }
 
 static char *
 unkeep(void)
 {
-	f++;
 	return ss_unkeep();
 }
 
@@ -234,13 +237,10 @@ local(void)
 	keep(var);
 	keep(val);
 	ss_push();
-	f--;
 	localiter(var, val, NULL);
-	f++;
 	s = ss_pop();
 	(void)unkeep();
 	(void)unkeep();
-	savestr(s);
 }
 
 static void
@@ -260,8 +260,6 @@ template(void)
 	var = pop();
 	keep(pat);
 	templateiter(var, val, pat);
-	save('\0');
-	savestr(unkeep());
 }
 
 static void
