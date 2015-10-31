@@ -223,8 +223,7 @@ local(void)
 static void
 templateiter(const char *var, const char *val, const char *pat)
 {
-	// XXX newsym
-	while ((val = getsym(newsym(val))) != NULL)
+	while ((val = lookup(val)) != NULL)
 		localiter(var, val, pat);
 }
 
