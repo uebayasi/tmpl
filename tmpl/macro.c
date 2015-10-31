@@ -24,7 +24,6 @@
 #include "dbg.h"
 #include "misc.h"
 
-struct local;
 struct local {
 	SLIST_ENTRY(local) entry;
 	const char *var;
@@ -152,14 +151,6 @@ define(int end)
 	}
 }
 
-static void
-unexpand(const char *s)
-{
-	savestr("~{");
-	savestr(s);
-	savestr("~}");
-}
-
 static const char *
 lookuplocal(const char *var)
 {
@@ -183,6 +174,14 @@ lookup(const char *var)
 		var = newsym(var);
 		return getsym(var);
 	}
+}
+
+static void
+unexpand(const char *s)
+{
+	savestr("~{");
+	savestr(s);
+	savestr("~}");
 }
 
 void
