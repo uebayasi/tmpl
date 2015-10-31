@@ -122,6 +122,7 @@ new(void)
 	f->sym = newsym(s);
 }
 
+#if 0
 static void
 keep(const char *s)
 {
@@ -134,6 +135,7 @@ unkeep(void)
 {
 	return ss_unkeep();
 }
+#endif
 
 static const char **
 getvars(int n)
@@ -236,22 +238,20 @@ local(void)
 static void
 templateiter(const char *var, const char *val, const char *pat)
 {
-	while ((val = getsym(val)) != NULL)
+	// XXX newsym
+	while ((val = getsym(newsym(val))) != NULL)
 		localiter(var, val, pat);
 }
 
 void
 template(void)
 {
-	const char *var, *val, *pat;
+	const char **v;
 
-	pat = pop();
-	val = pop();
-	var = pop();
-	keep(pat);
-	templateiter(var, val, pat);
+	v = getvars(3);
+	templateiter(v[0], v[1], v[2]);
 	ss_put('\0');
-	savestr(unkeep());
+	savestr(putvars(3));
 }
 
 static void

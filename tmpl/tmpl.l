@@ -197,11 +197,9 @@ template_delim(void)
 {
 	switch (delim()) {
 	case MACRO:
-		new();
 		push(TMPLVAR);
 		break;
 	case TMPLVAR:
-		new();
 		push(TMPLVAL);
 		break;
 	default:
