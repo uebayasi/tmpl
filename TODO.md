@@ -3,3 +3,4 @@
 - test error cases
 - optimize symtab
 - extend stack automatically (?)
+- allocate recursive scanner on stack (instead of yylex_init())

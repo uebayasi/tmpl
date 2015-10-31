@@ -12,6 +12,6 @@ SYNTAX
 
 `~{i~@foo~@xxx~{i~}xxx~}` expands `xxx~{i~}xxx` with `i` set to values of `foo` (template)
 
-`~{i~|hoge~|xxx~{i~}xxx~}` expands `xxxhogexxx` (local)
+`xxx~{i~|hoge~|~{i~}~}xxx~{i~}xxx` expands `xxxhogexxx~{i~}xxx` (local)
 
 `~{i~/x~/axbxc~/xxx~{i~}xxx ~}` expands `xxxaxxxx xxxbxxx xxxcxxx ` (split)
