@@ -33,7 +33,7 @@ SLIST_HEAD(locallist, local);
 struct locallist locals = SLIST_HEAD_INITIALIZER(locals);
 
 struct frame *f, *top, *bot;
-struct macro_ops *scan;
+struct macro_ops *ops;
 
 void
 initmacro(struct macro_ops *o)
@@ -46,7 +46,7 @@ initmacro(struct macro_ops *o)
 	ss_init(chars, chars + nitems(chars), strs, strs + nitems(strs));
 	bot = frames;
 	f = top = bot + nitems(frames);
-	scan = o;
+	ops = o;
 }
 
 void
@@ -60,10 +60,10 @@ void
 push(int op)
 {
 	if (f == bot)
-		(*scan->error)("stack too deep!!!\n");
+		(*ops->error)("stack too deep!!!\n");
 	f--;
 	if (ss_push())
-		(*scan->error)("cannot push string!!!\n");
+		(*ops->error)("cannot push string!!!\n");
 	f->sym = NULL;
 	f->op = op;
 }
@@ -78,10 +78,10 @@ pop(void)
 	else {
 		sym = ss_pop();
 		if (sym == (void *)-1)
-			(*scan->error)("cannot pop string!!!\n");
+			(*ops->error)("cannot pop string!!!\n");
 	}
 	if (f == top)
-		(*scan->error)("cannot pop stack!!!\n");
+		(*ops->error)("cannot pop stack!!!\n");
 	f++;
 	return sym;
 }
@@ -90,9 +90,9 @@ void
 save(char c)
 {
 	if (f == top)
-		(*scan->write)(c);
+		(*ops->write)(c);
 	else if (ss_put(c))
-		(*scan->error)("cannot push char!!!\n");
+		(*ops->error)("cannot push char!!!\n");
 	DUMPCHAR((f == top) ? '{' : '[', c);
 }
 
@@ -117,7 +117,7 @@ new(void)
 	char *s;
 
 	if ((s = ss_pop()) == (void *)-1)
-		(*scan->error)("cannot pop string!!!\n");
+		(*ops->error)("cannot pop string!!!\n");
 	f->sym = newsym(s);
 }
 
@@ -192,7 +192,7 @@ localiter(const char *var, const char *val, const char *pat)
 	l.var = var;
 	l.val = val;
 	SLIST_INSERT_HEAD(&locals, &l, entry);
-	(*scan->scan)(pat);
+	(*ops->scan)(pat);
 	SLIST_REMOVE_HEAD(&locals, entry);
 }
 
