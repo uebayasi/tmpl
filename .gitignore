@@ -7,4 +7,5 @@
 *.swp
 *.work
 .gdbinit
+tags
 tmpl.c
