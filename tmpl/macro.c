@@ -142,10 +142,10 @@ getvars(int n)
 	return (const char **)ss_getvars(n);
 }
 
-static void
+static const char *
 putvars(int n)
 {
-	savestr(ss_putvars(n));
+	return ss_putvars(n);
 }
 
 void
@@ -226,18 +226,11 @@ localiter(const char *var, const char *val, const char *pat)
 void
 local(void)
 {
-	const char *var, *val;
-	char *s;
+	const char **v;
 
-	val = pop();
-	var = pop();
-	keep(var);
-	keep(val);
-	ss_push();
-	localiter(var, val, NULL);
-	s = ss_pop();
-	(void)unkeep();
-	(void)unkeep();
+	v = getvars(2);
+	localiter(v[0], v[1], NULL);
+	(void)putvars(2);
 }
 
 static void
@@ -287,5 +280,5 @@ split(void)
 	v = getvars(4);
 	splititer(v[0], v[1], v[2], v[3]);
 	ss_put('\0');
-	putvars(4);
+	savestr(putvars(4));
 }
