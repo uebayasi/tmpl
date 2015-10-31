@@ -122,21 +122,6 @@ new(void)
 	f->sym = newsym(s);
 }
 
-#if 0
-static void
-keep(const char *s)
-{
-	if (ss_keep(overwrite(s)))
-		(*scan->error)("cannot push char!!!\n");
-}
-
-static char *
-unkeep(void)
-{
-	return ss_unkeep();
-}
-#endif
-
 static const char **
 getvars(int n)
 {

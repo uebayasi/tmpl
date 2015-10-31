@@ -70,28 +70,6 @@ ss_pop(void)
 	}
 }
 
-int
-ss_keep(char *s)
-{
-	cur = s;
-	ss_push();
-	while (*s++ != '\0')
-		continue;
-	cur = s;
-	return 0;
-}
-
-char *
-ss_unkeep(void)
-{
-	char *s;
-
-	s = ss_pop();
-	while (*s++ != '\0')
-		continue;
-	return s;
-}
-
 char **
 ss_getvars(int n)
 {
