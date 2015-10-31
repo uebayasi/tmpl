@@ -152,7 +152,7 @@ define(int end)
 }
 
 static const char *
-lookuplocal(const char *var)
+lookup(const char *var)
 {
 	struct local *l;
 
@@ -160,20 +160,7 @@ lookuplocal(const char *var)
 		if (strcmp(var, l->var) == 0)
 			break;
 	}
-	return (l != NULL) ? l->val : NULL;
-}
-
-static const char *
-lookup(const char *var)
-{
-	const char *val;
-
-	if ((val = lookuplocal(var)) != NULL)
-		return val;
-	else {
-		var = newsym(var);
-		return getsym(var);
-	}
+	return (l != NULL) ? l->val : getsym(newsym(var));
 }
 
 static void
