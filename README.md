@@ -2,10 +2,16 @@ tmpl - simple template scanner
 
 SYNTAX
 
-`~{foo~}` is replaced with the value of `foo`.
+`~{foo~}` is replaced with the value of `foo` (expand)
 
-`~{foo~=a~}` sets `foo` to `a`.
+`~{foo~}` expands `~{foo~}` when `foo` is not defined (unexpand)
 
-`~{foo~=a~=b~=c~}` sets `foo` to `a`, `a` to `b`, and `b` to `c`.
+`~{foo~=a~}` sets `foo` to `a` (global)
 
-`~{i~@foo~@xxx~{i~}xxx~}` expands `xxx~{i~}xxx` with `i` set to values of `foo`.
+`~{foo~=a~=b~=c~}` sets `foo` to `a`, `a` to `b`, and `b` to `c` (global list)
+
+`~{i~@foo~@xxx~{i~}xxx~}` expands `xxx~{i~}xxx` with `i` set to values of `foo` (template)
+
+`~{i~|hoge~|xxx~{i~}xxx~}` expands `xxxhogexxx` (local)
+
+`~{i~/x~/axbxc~/xxx~{i~}xxx ~}` expands `xxxaxxxx xxxbxxx xxxcxxx ` (split)
