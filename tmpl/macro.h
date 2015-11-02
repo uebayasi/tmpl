@@ -21,7 +21,7 @@
 
 struct frame {
 	const char *sym;
-	int op;
+	int cmd;
 };
 
 struct macro_ops {

@@ -57,7 +57,7 @@ finimacro(void)
 }
 
 void
-push(int op)
+push(int cmd)
 {
 	if (f == bot)
 		(*ops->error)("stack too deep!!!\n");
@@ -65,7 +65,7 @@ push(int op)
 	if (ss_push())
 		(*ops->error)("cannot push string!!!\n");
 	f->sym = NULL;
-	f->op = op;
+	f->cmd = cmd;
 }
 
 static const char *
@@ -108,7 +108,7 @@ savestr(const char *s)
 int
 delim(void)
 {
-	return f->op;
+	return f->cmd;
 }
 
 void
@@ -138,14 +138,14 @@ void
 define(int end)
 {
 	const char *var = NULL, *val;
-	int op = -1;
+	int cmd = -1;
 
-	while (op != end) {
+	while (cmd != end) {
 		if (var == NULL)
 			val = pop();
 		else
 			val = var;
-		op = f->op;
+		cmd = f->cmd;
 		var = pop();
 		setsym(newsym(var), newsym(val));
 	}
