@@ -28,7 +28,7 @@ static void template_delim(void);
 static void split_delim(void);
 static int macro_end(void *);
 
-enum op {
+enum cmd {
 	MACRO = 1,
 	DEFINE,
 	LOCAL,
