@@ -187,10 +187,8 @@ expand(void)
 static void
 localiter(const char *var, const char *val, const char *pat)
 {
-	struct local l;
+	struct local l = { .var = var, .val = val };
 
-	l.var = var;
-	l.val = val;
 	SLIST_INSERT_HEAD(&locals, &l, entry);
 	(*ops->scan)(pat);
 	SLIST_REMOVE_HEAD(&locals, entry);
