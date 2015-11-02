@@ -1,3 +1,4 @@
+- conditional (ifdef, ifeq)
 - implement sym based on ss (instead of symtab)
 - comment ('~#')
 - test error cases
