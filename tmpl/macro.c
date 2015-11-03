@@ -76,8 +76,7 @@ pop(void)
 	if (f->sym != NULL)
 		sym = f->sym;
 	else {
-		sym = ss_pop();
-		if (sym == (void *)-1)
+		if ((sym = ss_pop()) == (void *)-1)
 			(*ops->error)("cannot pop string!!!\n");
 	}
 	if (f == top)
@@ -141,10 +140,7 @@ define(int end)
 	int cmd = -1;
 
 	while (cmd != end) {
-		if (var == NULL)
-			val = pop();
-		else
-			val = var;
+		val = (var == NULL) ? pop() : var;
 		cmd = f->cmd;
 		var = pop();
 		setsym(newsym(var), newsym(val));
@@ -178,8 +174,7 @@ expand(void)
 	const char *val;
 
 	v = getvars(1);
-	val = lookup(v[0]);
-	if (val == NULL)
+	if ((val = lookup(v[0])) == NULL)
 		unexpand(v[0]);
 	else
 		savestr(val);
