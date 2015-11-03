@@ -51,16 +51,23 @@ slash	[/]
 %state	TILDA
 
 %option	reentrant
+%option	noinput
+%option	nounput
+%{
+#ifndef YY_NO_UNPUT
+#define YY_NO_UNPUT 1
+#endif
+#ifndef YY_NO_INPUT
+#define YY_NO_INPUT 1
+#endif
+%}
 
 %%
 
 <INITIAL>{tilda} {
 	BEGIN(TILDA);
 }
-<INITIAL>. {
-	just(yyscanner);
-}
-<INITIAL>[\r\n] {
+<INITIAL>.|[\r\n] {
 	just(yyscanner);
 }
 
@@ -107,7 +114,7 @@ slash	[/]
 	BEGIN(0);
 	just(yyscanner);
 }
-<TILDA>[.\r\n] {
+<TILDA>.|[\r\n] {
 	/* discard */
 	BEGIN(0);
 }
@@ -132,9 +139,6 @@ main(int argc, char *argv[])
 		.scan = &scan_scan,
 		.error = &scan_error,
 	};
-
-	(void)yyunput;
-	(void)input;
 
 	initmacro(&ops);
 	yylex_init(&main_scan);
