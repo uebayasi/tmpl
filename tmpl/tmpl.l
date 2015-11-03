@@ -234,7 +234,6 @@ macro_end(void *scan)
 		; /* nothing */
 	switch (delim()) {
 	case MACRO:
-		new();
 		expand();
 		break;
 	case DEFINE:

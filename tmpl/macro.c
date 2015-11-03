@@ -174,14 +174,17 @@ unexpand(const char *s)
 void
 expand(void)
 {
-	const char *var, *val;
+	const char **v;
+	const char *val;
 
-	var = pop();
-	val = lookup(var);
+	v = getvars(1);
+	val = lookup(v[0]);
 	if (val == NULL)
-		unexpand(var);
+		unexpand(v[0]);
 	else
 		savestr(val);
+	ss_put('\0');
+	savestr(putvars(1));
 }
 
 static void
