@@ -47,8 +47,10 @@ equal	[=]
 bar	[|]
 at	[@]
 slash	[/]
+sharp	[#]
 
 %state	TILDA
+%state	COMMNT
 
 %option	reentrant
 %option	noinput
@@ -114,9 +116,19 @@ slash	[/]
 	BEGIN(0);
 	just(yyscanner);
 }
+<TILDA>{sharp} {
+	BEGIN(COMMNT);
+}
 <TILDA>.|[\r\n] {
 	/* discard */
 	BEGIN(0);
+}
+
+<COMMENT>[\r\n] {
+	BEGIN(0);
+}
+<COMMENT>. {
+	/* ignore */
 }
 
 %%
