@@ -53,8 +53,8 @@ sharp	[#]
 %state	COMMNT
 
 %option	reentrant
-%option	noinput
 %option	nounput
+%option	noinput
 %{
 #ifndef YY_NO_UNPUT
 #define YY_NO_UNPUT 1
