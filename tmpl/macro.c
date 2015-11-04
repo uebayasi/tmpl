@@ -33,10 +33,10 @@ SLIST_HEAD(locallist, local);
 struct locallist locals = SLIST_HEAD_INITIALIZER(locals);
 
 struct frame *f, *top, *bot;
-struct macro_ops *ops;
+const struct macro_ops *ops;
 
 void
-initmacro(struct macro_ops *o)
+initmacro(const struct macro_ops *o)
 {
 	static char chars[SS_NCHARS];
 	static char *strs[SS_NSTRS];

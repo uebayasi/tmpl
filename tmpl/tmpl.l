@@ -146,7 +146,7 @@ static int main_scan_depth;
 int
 main(int argc, char *argv[])
 {
-	static struct macro_ops ops = {
+	static const struct macro_ops ops = {
 		.write = &scan_write,
 		.scan = &scan_scan,
 		.error = &scan_error,
