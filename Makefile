@@ -42,6 +42,7 @@ test14 \
 test15 \
 test16 \
 test17 \
+test18 \
 
 .for t in ${tmpl_tests}
 test: ./tests/${t}.tmpl.out

@@ -143,7 +143,10 @@ define(int end)
 		val = (var == NULL) ? pop() : var;
 		cmd = f->cmd;
 		var = pop();
-		setsym(newsym(var), newsym(val));
+		if (var[0] != '\0')
+			setsym(newsym(var), newsym(val));
+		else
+			delsym(newsym(val));
 	}
 }
 
