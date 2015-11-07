@@ -5,6 +5,7 @@
 CFLAGS=		-Wall -Werror -g -O0
 #CPPFLAGS=	-DDEBUG
 CC=		cc ${CPPFLAGS} ${CFLAGS}
+LEX=		flex
 
 all: ./tmpl/tmpl.exe test
 
@@ -20,7 +21,7 @@ tmpl_exe_OBJS= \
 	${CC} -o ./tmpl/tmpl.exe ${tmpl_exe_OBJS} ./symtab/symtab.o -ll
 
 ./tmpl/tmpl.c: ./tmpl/tmpl.l
-	flex -o./tmpl/tmpl.c ./tmpl/tmpl.l
+	${LEX} -o./tmpl/tmpl.c ./tmpl/tmpl.l
 
 tmpl_tests= \
 test0 \
