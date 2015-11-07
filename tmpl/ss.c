@@ -76,8 +76,10 @@ ss_getvars(int n)
 	char **v;
 
 	v = ss - n;
-	ss_push();
-	return v;
+	if (ss_push())
+		return (void *)-1;
+	else
+		return v;
 }
 
 char *
@@ -85,8 +87,11 @@ ss_putvars(int n)
 {
 	char *s;
 
-	s = ss_pop();
-	ss -= n;
-	cur = *ss;
-	return s;
+	if ((s = ss_pop()) == (void *)-1)
+		return (void *)-1;
+	else {
+		ss -= n;
+		cur = *ss;
+		return s;
+	}
 }

@@ -47,20 +47,29 @@ equal	[=]
 bar	[|]
 at	[@]
 slash	[/]
+sharp	[#]
 
 %state	TILDA
+%state	COMMNT
 
 %option	reentrant
+%option	nounput
+%option	noinput
+%{
+#ifndef YY_NO_UNPUT
+#define YY_NO_UNPUT 1
+#endif
+#ifndef YY_NO_INPUT
+#define YY_NO_INPUT 1
+#endif
+%}
 
 %%
 
 <INITIAL>{tilda} {
 	BEGIN(TILDA);
 }
-<INITIAL>. {
-	just(yyscanner);
-}
-<INITIAL>[\r\n] {
+<INITIAL>.|[\r\n] {
 	just(yyscanner);
 }
 
@@ -107,9 +116,19 @@ slash	[/]
 	BEGIN(0);
 	just(yyscanner);
 }
-<TILDA>[.\r\n] {
+<TILDA>{sharp} {
+	BEGIN(COMMNT);
+}
+<TILDA>.|[\r\n] {
 	/* discard */
 	BEGIN(0);
+}
+
+<COMMENT>[\r\n] {
+	BEGIN(0);
+}
+<COMMENT>. {
+	/* ignore */
 }
 
 %%
@@ -127,14 +146,11 @@ static int main_scan_depth;
 int
 main(int argc, char *argv[])
 {
-	static struct macro_ops ops = {
+	static const struct macro_ops ops = {
 		.write = &scan_write,
 		.scan = &scan_scan,
 		.error = &scan_error,
 	};
-
-	(void)yyunput;
-	(void)input;
 
 	initmacro(&ops);
 	yylex_init(&main_scan);
@@ -234,7 +250,6 @@ macro_end(void *scan)
 		; /* nothing */
 	switch (delim()) {
 	case MACRO:
-		new();
 		expand();
 		break;
 	case DEFINE:

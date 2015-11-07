@@ -30,7 +30,7 @@ struct macro_ops {
 	void (*error)(const char *, ...) __attribute__((__noreturn__));
 };
 
-void initmacro(struct macro_ops *);
+void initmacro(const struct macro_ops *);
 void finimacro(void);
 void push(int);
 void save(char c);

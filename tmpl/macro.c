@@ -33,10 +33,10 @@ SLIST_HEAD(locallist, local);
 struct locallist locals = SLIST_HEAD_INITIALIZER(locals);
 
 struct frame *f, *top, *bot;
-struct macro_ops *ops;
+const struct macro_ops *ops;
 
 void
-initmacro(struct macro_ops *o)
+initmacro(const struct macro_ops *o)
 {
 	static char chars[SS_NCHARS];
 	static char *strs[SS_NSTRS];
@@ -76,8 +76,7 @@ pop(void)
 	if (f->sym != NULL)
 		sym = f->sym;
 	else {
-		sym = ss_pop();
-		if (sym == (void *)-1)
+		if ((sym = ss_pop()) == (void *)-1)
 			(*ops->error)("cannot pop string!!!\n");
 	}
 	if (f == top)
@@ -141,10 +140,7 @@ define(int end)
 	int cmd = -1;
 
 	while (cmd != end) {
-		if (var == NULL)
-			val = pop();
-		else
-			val = var;
+		val = (var == NULL) ? pop() : var;
 		cmd = f->cmd;
 		var = pop();
 		setsym(newsym(var), newsym(val));
@@ -174,14 +170,16 @@ unexpand(const char *s)
 void
 expand(void)
 {
-	const char *var, *val;
+	const char **v;
+	const char *val;
 
-	var = pop();
-	val = lookup(var);
-	if (val == NULL)
-		unexpand(var);
+	v = getvars(1);
+	if ((val = lookup(v[0])) == NULL)
+		unexpand(v[0]);
 	else
 		savestr(val);
+	ss_put('\0');
+	savestr(putvars(1));
 }
 
 static void
