@@ -8,24 +8,8 @@ scrpt=${test}.sh
 
 ################################################################################
 
-repeat() {
-	local times=$1
-	local func=$2
-	local i=0	
-
-	while [ $i -lt $times ]; do
-		eval $func
-		i=$(( $i + 1 ))
-	done
-}
-
-cutter() {
-	printf '%s' '--------8<'
-}
-
 separator() {
-	repeat 8 cutter
-	printf '\n'
+	printf '--------8<--------8<--------8<--------8<--------8<--------8<--------8<--------8<\n'
 }
 
 dump_normal() {

@@ -27,14 +27,15 @@ ss_init(char *p, char *q, char **s, char **e)
 	head = cur = p;
 	tail = q;
 	sss = s;
-	sse = ss = e;
+	sse = e;
+	ss = sss;
 }
 
 void
 ss_fini(void)
 {
 	assert(cur == head);
-	assert(ss == sse);
+	assert(ss == sss);
 }
 
 int
@@ -51,7 +52,7 @@ ss_put(char c)
 int
 ss_push(void)
 {
-	if (ss == sss)
+	if (ss == sse)
 		return 1;
 	else {
 		*ss++ = cur;
@@ -62,7 +63,7 @@ ss_push(void)
 char *
 ss_pop(void)
 {
-	if (ss == sse)
+	if (ss == sss)
 		return (void *)-1;
 	else {
 		cur = *--ss;
