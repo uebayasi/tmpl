@@ -41,5 +41,6 @@ void expand(void);
 void local(void);
 void template(void);
 void split(void);
+void ifdef(void);
 
 #endif /* _MACRO_H_ */

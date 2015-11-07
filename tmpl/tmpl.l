@@ -26,6 +26,7 @@ static int local_delim(void);
 static void local_start(void);
 static void template_delim(void);
 static void split_delim(void);
+static void ifdef_delim(void);
 static int macro_end(void *);
 
 enum cmd {
@@ -37,6 +38,8 @@ enum cmd {
 	SPLITSEP,
 	SPLITVAL,
 	SPLITPAT,
+	IFDEFVAR,
+	IFDEFTRUE,
 };
 %}
 
@@ -48,6 +51,7 @@ bar	[|]
 at	[@]
 slash	[/]
 sharp	[#]
+dollar	[$]
 
 %state	TILDA
 %state	COMMNT
@@ -103,6 +107,12 @@ sharp	[#]
 	yytext[0] = '\0';
 	just(yyscanner);
 	split_delim();
+}
+<TILDA>{dollar} {
+	BEGIN(0);
+	yytext[0] = '\0';
+	just(yyscanner);
+	ifdef_delim();
 }
 <TILDA>{close} {
 	BEGIN(0);
@@ -241,6 +251,21 @@ split_delim(void)
 	}
 }
 
+static void
+ifdef_delim(void)
+{
+	switch (delim()) {
+	case MACRO:
+		push(IFDEFVAR);
+		break;
+	case IFDEFVAR:
+		push(IFDEFTRUE);
+		break;
+	default:
+		scan_error("~$ outside macro define!!!");
+	}
+}
+
 static int
 macro_end(void *scan)
 {
@@ -261,6 +286,9 @@ macro_end(void *scan)
 		break;
 	case SPLITPAT:
 		split();
+		break;
+	case IFDEFTRUE:
+		ifdef();
 		break;
 	default:
 		if (scan_depth() == 0)

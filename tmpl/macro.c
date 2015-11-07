@@ -248,3 +248,13 @@ split(void)
 	ss_put('\0');
 	savestr(putvars(4));
 }
+
+void
+ifdef(void)
+{
+	const char **v;
+
+	v = getvars(3);
+	savestr(lookup(v[0]) != NULL ? v[1] : v[2]);
+	(void)putvars(3);
+}
