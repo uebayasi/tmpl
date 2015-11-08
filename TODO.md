@@ -1,4 +1,6 @@
-- conditional (ifdef, ifeq)
+- rethink syntax; go for multiple characters; never use function names!
+  - be careful about uniqueness
+- conditional (ifeq)
 - implement sym based on ss (instead of symtab)
 - test error cases
 - optimize symtab
