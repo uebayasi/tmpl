@@ -7,21 +7,23 @@ CPPFLAGS?=	-DDEBUG
 CC?=		cc ${CPPFLAGS} ${CFLAGS}
 LEX?=		flex
 
-all: ./tmpl/tmpl.exe test
+all: ./srcs/tmpl/tmpl.exe test
 
 # tmpl
 
 tmpl_exe_OBJS= \
-./tmpl/tmpl.o \
-./tmpl/macro.o \
-./tmpl/ss.o \
-./tmpl/sym.o \
+./srcs/tmpl/tmpl.o \
+./srcs/tmpl/macro.o \
+./srcs/tmpl/ss.o \
+./srcs/tmpl/sym.o \
 
-./tmpl/tmpl.exe: ${tmpl_exe_OBJS} ./symtab/symtab.o
-	${CC} -o ./tmpl/tmpl.exe ${tmpl_exe_OBJS} ./symtab/symtab.o -ll
+./srcs/tmpl/tmpl.exe: ${tmpl_exe_OBJS} ./srcs/symtab/symtab.o
+	${CC} -o ./srcs/tmpl/tmpl.exe ${tmpl_exe_OBJS} ./srcs/symtab/symtab.o -ll
 
-./tmpl/tmpl.c: ./tmpl/tmpl.l
-	${LEX} -o./tmpl/tmpl.c ./tmpl/tmpl.l
+./srcs/tmpl/tmpl.c: ./srcs/tmpl/tmpl.l
+	${LEX} -o./srcs/tmpl/tmpl.c ./srcs/tmpl/tmpl.l
+
+# tests
 
 tmpl_tests= \
 test0 \
@@ -52,23 +54,23 @@ ${t}: ./tests/${t}.tmpl.out
 .else
 ./tests/${t}.tmpl.out: ./tests/${t}.sh
 .endif
-./tests/${t}.tmpl.out: ./tests/test.sh ./tmpl/tmpl.exe
+./tests/${t}.tmpl.out: ./tests/test.sh ./srcs/tmpl/tmpl.exe
 	@cd ./tests && ./test.sh ${t}
 .endfor
 
 # symtab
 
 symtab_o_OBJS= \
-./symtab/hashtab.o \
-./symtab/intern.o \
+./srcs/symtab/hashtab.o \
+./srcs/symtab/intern.o \
 
-./symtab/symtab.o: ${symtab_o_OBJS}
-	ld -r -o ./symtab/symtab.o ${symtab_o_OBJS}
+./srcs/symtab/symtab.o: ${symtab_o_OBJS}
+	ld -r -o ./srcs/symtab/symtab.o ${symtab_o_OBJS}
 
 # clean
 
 clean:
-	rm -f ./tmpl/tmpl.c */*.o */*.exe ./tests/*.out ./tests/*.err
+	rm -f ./srcs/tmpl/tmpl.c */*.o */*.exe ./tests/*.out ./tests/*.err
 
 # rules
 

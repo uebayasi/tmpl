@@ -5,6 +5,7 @@
 test=$1
 tmpl=${test}.tmpl
 scrpt=${test}.sh
+exe=../srcs/tmpl/tmpl.exe
 
 ################################################################################
 
@@ -68,9 +69,9 @@ dump() {
 ################################################################################
 
 if [ -e $tmpl ]; then
-	../tmpl/tmpl.exe <$tmpl
+	$exe <$tmpl
 else
-	sh $scrpt | ../tmpl/tmpl.exe
+	sh $scrpt | $exe
 fi >$tmpl.out 2>$tmpl.err
 res=$?
 
