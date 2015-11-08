@@ -2,10 +2,10 @@
 
 # common
 
-CFLAGS=		-Wall -Werror -g -O0
-#CPPFLAGS=	-DDEBUG
-CC=		cc ${CPPFLAGS} ${CFLAGS}
-LEX=		flex
+CFLAGS?=	-Wall -Werror -g -O0
+CPPFLAGS?=	-DDEBUG
+CC?=		cc ${CPPFLAGS} ${CFLAGS}
+LEX?=		flex
 
 all: ./tmpl/tmpl.exe test
 
